@@ -1,0 +1,99 @@
+Source: dde
+Section: metapackages
+Priority: extra
+Maintainer: LinuxDeepin Project <linuxdeepin@linuxdeepin.com>
+Build-Depends: debhelper (>=8.0.0)
+Standards-Version: 3.9.3
+Homepage: http://www.linuxdeepin.com
+
+Package: dde
+Architecture: all
+Depends: ${misc:Depends},
+ deepin-desktop-base,
+ dde-desktop,
+ dde-dock,
+ dde-launcher,
+ dde-control-center(>> 2.90.5),
+ deepin-metacity,
+ deepin-wm,
+ startdde,
+ dde-session-ui,
+ deepin-appstore,
+ deepin-artwork,
+ deepin-notifications,
+ deepin-manual,
+ dde-file-manager,
+ dde-qt5integration,
+ dde-disk-mount-plugin,
+ dde-trash-plugin,
+ eject,
+ plymouth-theme-deepin-logo,
+ deepin-wallpapers,
+ fonts-noto,
+ fonts-symbola,
+ dde-introduction
+Recommends:
+ file-roller,
+ gksu,
+ gedit,
+ deepin-system-monitor,
+ live-filesystem,
+ deepin-clone,
+ pppoe,
+ gvfs-fuse,
+ smbclient,
+ python-smbc,
+ cups-filters,
+ printer-driver-all,
+ foomatic-db-compressed-ppds,
+ foomatic-db-engine,
+ openprinting-ppds,
+ libsane-hpaio,
+ firmware-ipw2x00,
+ wireless-tools,
+ printer-driver-deepin-cloud-print,
+ deepin-cloud-scanner,
+ deepin-wine-uninstaller:i386,
+ ttf-deepin-opensymbol,
+ deepin-terminal,
+ deepin-feedback,
+ printer-driver-hpcups,
+ printer-driver-hpijs,
+ libmtp-runtime,
+ samsung-print,
+ open-vm-tools-desktop,
+ open-vm-tools,
+ usbmuxd,
+ ipheth-utils,
+ libimobiledevice-dev,
+ libimobiledevice-utils,
+ dnsutils,
+ libfile-mimeinfo-perl,
+ deepin-shortcut-viewer,
+ crda,
+ network-manager-integration-plugins,
+ libtxc-dxtn-s2tc0 | libtxc-dxtn-s2tc,
+ libflashplugin-pepper,
+ miraclecast,
+ x-display-manager,
+ deepin-fpapp-org.deepin.flatdeb.deepin-screen-recorder,
+ deepin-fpapp-org.deepin.flatdeb.deepin-voice-recorder,
+ deepin-fpapp-org.deepin.flatdeb.deepin-screenshot,
+ deepin-fpapp-org.deepin.flatdeb.deepin-picker,
+ deepin-fpapp-org.deepin.flatdeb.deepin-music,
+ deepin-fpapp-org.deepin.flatdeb.deepin-image-viewer,
+ deepin-fpapp-org.deepin.flatdeb.deepin-calendar,
+ deepin-fpapp-org.deepin.flatdeb.deepin-calculator,
+ deepin-graphics-driver-manager,
+ deepin-font-installer
+Suggests:
+ deepin-boot-maker,
+Conflicts:
+ dde-control-center(<< 2.90.5),
+ deepin-desktop-environment-desktop,
+ deepin-desktop-environment-dock,
+ deepin-desktop-environment-launcher,
+Description: Deepin New Desktop Environment - Next
+ This is a meta package depends Deepin New Desktop Envrionment.
+ .
+ You can safety remove it after installed.
