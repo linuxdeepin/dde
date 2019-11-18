@@ -26,6 +26,8 @@ Depends: ${misc:Depends},
  deepin-wallpapers,
  fonts-noto,
  dde-kwin,
+ dde-clipboard,
+ deepin-aiassistant,
  deepin-screensaver
 Recommends:
  dde-introduction,
