@@ -28,7 +28,8 @@ Depends: ${misc:Depends},
  dde-kwin,
  dde-clipboard,
  deepin-aiassistant,
- deepin-screensaver
+ deepin-screensaver,
+ dde-clipboard
 Recommends:
  dde-introduction,
  file-roller,
