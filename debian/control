@@ -27,11 +27,11 @@ Depends: ${misc:Depends},
  fonts-noto,
  dde-kwin,
  dde-clipboard,
- deepin-aiassistant,
  deepin-screensaver,
  dde-clipboard
 Recommends:
  dde-introduction,
+ deepin-aiassistant,
  deepin-appstore,
  deepin-editor,
  deepin-system-monitor,
