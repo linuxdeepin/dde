@@ -28,7 +28,8 @@ Depends: ${misc:Depends},
  dde-kwin,
  dde-clipboard,
  deepin-screensaver,
- dde-clipboard
+ dde-clipboard,
+ deepin-license-activator
 Recommends:
  dde-introduction,
  deepin-aiassistant,
