@@ -83,6 +83,7 @@ Recommends:
  fcitx-sunpinyin,
  fcitx-ui-classic
 Conflicts:
+ uos-chineseime,
  dde-control-center(<< 2.90.5),
  deepin-desktop-environment-desktop,
  deepin-desktop-environment-dock,
