@@ -79,7 +79,9 @@ Recommends:
  deepin-album,
  deepin-movie,
  deepin-deb-installer,
- deepin-compressor
+ deepin-compressor,
+ fcitx-sunpinyin,
+ fcitx-ui-classic
 Conflicts:
  dde-control-center(<< 2.90.5),
  deepin-desktop-environment-desktop,
