@@ -82,9 +82,7 @@ Recommends:
  deepin-compressor,
  fcitx-sunpinyin,
  fcitx-ui-classic
-Replaces: uos-chineseime
 Conflicts:
- uos-chineseime,
  dde-control-center(<< 2.90.5),
  deepin-desktop-environment-desktop,
  deepin-desktop-environment-dock,
