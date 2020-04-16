@@ -31,7 +31,6 @@ Depends: ${misc:Depends},
  dde-clipboard
 Recommends:
  dde-introduction,
- deepin-aiassistant,
  deepin-app-store,
  deepin-editor,
  deepin-system-monitor,
