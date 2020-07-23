@@ -9,7 +9,7 @@ Homepage: http://www.linuxdeepin.com
 Package: dde
 Architecture: all
 Depends: ${misc:Depends},
- deepin-desktop-base | deepin-desktop-server,
+ deepin-desktop-base | deepin-desktop-server | deepin-desktop-device,
  deepin-default-settings,
  dde-desktop,
  dde-dock,
