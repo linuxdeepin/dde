@@ -96,6 +96,8 @@ Conflicts:
  deepin-desktop-environment-desktop,
  deepin-voice-recorder,
  deepin-appstore,
+ warm-sched,
+ mincores-dkms,
  google-chrome-stable,
  printer-driver-deepin-cloud-print,
  deepin-cloud-scanner,

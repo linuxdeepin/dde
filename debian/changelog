@@ -1,8 +1,8 @@
-dde (2020.07.29-apricot) UNRELEASED; urgency=medium
+dde (2020.07.30) UNRELEASED; urgency=medium
 
   * update depends
 
- -- Deepin Packages Builder <caihh@caihh-PC>  Wed, 29 Jul 2020 11:29:17 +0800
+ -- Deepin Packages Builder <caihh@caihh-PC>  Wed, 29 Jul 2020 20:01:48 +0800
 
 dde (2019.09.26) stable; urgency=medium
 
