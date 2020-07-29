@@ -1,6 +1,6 @@
 Source: dde
 Section: metapackages
-Priority: extra
+Priority: standard
 Maintainer: LinuxDeepin Project <linuxdeepin@linuxdeepin.com>
 Build-Depends: debhelper (>=8.0.0)
 Standards-Version: 3.9.3
@@ -28,6 +28,17 @@ Depends: ${misc:Depends},
  dde-kwin,
  dde-clipboard,
  deepin-screensaver,
+ chromium,
+ chromium-sandbox,
+ chromium-l10n,
+ dde-printer,
+ deepin-reader,
+ deepin-boot-maker,
+ deepin-devicemanager,
+ deepin-log-viewer,
+ cheese,
+ libreoffice,
+ libreoffice-l10n-zh-cn,
  dde-clipboard
 Recommends:
  dde-introduction,
@@ -83,6 +94,11 @@ Recommends:
 Conflicts:
  dde-control-center(<< 2.90.5),
  deepin-desktop-environment-desktop,
+ deepin-voice-recorder,
+ deepin-appstore,
+ google-chrome-stable,
+ printer-driver-deepin-cloud-print,
+ deepin-cloud-scanner,
  deepin-desktop-environment-dock,
  deepin-desktop-environment-launcher,
 Description: Deepin New Desktop Environment - Next
