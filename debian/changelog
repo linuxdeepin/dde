@@ -1,3 +1,10 @@
+dde (2020.08.07) stable; urgency=medium
+
+  * update depends
+  * remove libreoffice chromium cheese
+  * remove contlict  google-chrome-stab
+
+ -- Deepin Packages Builder <lichenggang@uniontech.com>  Fri, 07 Aug 2020 10:28:09 +0800
 dde (2020.07.30) UNRELEASED; urgency=medium
 
   * update depends
