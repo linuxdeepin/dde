@@ -1,3 +1,9 @@
+dde (2020.11.14) UNRELEASED; urgency=medium
+
+  * Update depends
+
+ -- system-dev <system-dev@uniontech.com>  Sun, 15 Nov 2020 01:40:41 +0800
+
 dde (2019.09.26) stable; urgency=medium
 
   * add cm for rem
@@ -206,37 +212,37 @@ dde (15.4+4) unstable; urgency=medium
 
   * remove deepin-nautilus-properties
 
- -- Deepin Packages Builder <zs@zs-PC>  Tue, 11 Apr 2017 15:25:27 +0800
+ -- Deepin Packages Builder <zs@deepin.com>  Tue, 11 Apr 2017 15:25:27 +0800
 
 dde (15.4+3) unstable; urgency=medium
 
   * remove essential yes
 
- -- Deepin Packages Builder <zs@zs-PC>  Fri, 31 Mar 2017 12:22:24 +0800
+ -- Deepin Packages Builder <zs@deepin.com>  Fri, 31 Mar 2017 12:22:24 +0800
 
 dde (15.4+2) unstable; urgency=medium
 
   * Tag for add essential yes 
 
- -- Deepin Packages Builder <zs@zs-PC>  Tue, 28 Mar 2017 15:57:27 +0800
+ -- Deepin Packages Builder <zs@deepin.com>  Tue, 28 Mar 2017 15:57:27 +0800
 
 dde (15.4+1) unstable; urgency=medium
 
   * Tag for dde
 
- -- Deepin Packages Builder <zs@zs-PC>  Wed, 22 Mar 2017 17:55:32 +0800
+ -- Deepin Packages Builder <zs@deepin.com>  Wed, 22 Mar 2017 17:55:32 +0800
 
 dde (15.4) unstable; urgency=medium
 
   * rebuild
 
- -- Deepin Packages Builder <zs@zs-PC>  Wed, 22 Mar 2017 10:19:19 +0800
+ -- Deepin Packages Builder <zs@deepin.com>  Wed, 22 Mar 2017 10:19:19 +0800
 
 dde (15.3+22) unstable; urgency=medium
 
   * add dde-qt5integration
 
- -- Deepin Packages Builder <zs@zs-PC>  Tue, 21 Mar 2017 19:24:27 +0800
+ -- Deepin Packages Builder <zs@deepin.com>  Tue, 21 Mar 2017 19:24:27 +0800
 
 dde (15.3+21) unstable; urgency=medium
 

@@ -29,13 +29,20 @@ Depends: ${misc:Depends},
  dde-clipboard,
  deepin-screensaver,
  dde-clipboard,
- deepin-license-activator
+ deepin-license-activator,
+ deepin-app-store,
+ deepin-terminal,
+ deepin-defender,
+ deepin-system-monitor,
+ deepin-devicemanager,
+ dde-printer,
+ dde-calendar,
+ uos-service-support,
+ fcitx
 Recommends:
  dde-introduction,
  deepin-aiassistant,
- deepin-app-store,
  deepin-editor,
- deepin-system-monitor,
  pppoe,
  gvfs-fuse,
  smbclient,
@@ -49,7 +56,6 @@ Recommends:
  linux-firmware,
  wireless-tools,
  ttf-deepin-opensymbol,
- deepin-terminal | gnome-terminal,
  printer-driver-hpcups,
  printer-driver-hpijs,
  libmtp-runtime,
@@ -70,7 +76,6 @@ Recommends:
  x-display-manager,
  deepin-music,
  deepin-image-viewer,
- dde-calendar,
  deepin-calculator,
  deepin-voice-note,
  deepin-screen-recorder,
@@ -79,7 +84,12 @@ Recommends:
  deepin-album,
  deepin-movie,
  deepin-deb-installer,
+ downloader,
  deepin-compressor,
+ deepin-mail,
+ deepin-diskmanager,
+ deepin-camera,
+ deepin-phone-assistant,
  fcitx-sunpinyin,
  fcitx-ui-classic
 Conflicts:
@@ -88,6 +98,30 @@ Conflicts:
  deepin-desktop-environment-dock,
  deepin-desktop-environment-launcher,
 Description: Deepin New Desktop Environment - Next
- This is a meta package depends Deepin New Desktop Envrionment.
+ This metapackage merely depends on the various Deepin Desktop Envrionment packages available in Deepin. 
+ Use this if you want Deepin Desktop Envrionment.
  .
+ The following metapackages will be pulled down as dependency which
+ will inturn pull down real font packages.
+   * deepin-desktop-base 
+   * deepin-default-settings,
+   * dde-desktop
+   * dde-dock
+   * dde-launcher
+   * dde-control-center
+   * startdde
+   * dde-session-ui
+   * deepin-artwork
+   * deepin-manual
+   * dde-file-manager
+   * dde-qt5integration
+   * eject
+   * plymouth-theme-deepin-logo
+   * deepin-wallpapers
+   * fonts-noto
+   * dde-kwin
+   * dde-clipboard
+   * deepin-screensaver
+   * dde-clipboard
+   * deepin-license-activator
  You can safety remove it after installed.
