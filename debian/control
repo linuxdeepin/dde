@@ -38,7 +38,7 @@ Depends: ${misc:Depends},
  dde-printer,
  dde-calendar,
  uos-service-support,
- fcitx
+ fcitx-config-gtk
 Recommends:
  dde-introduction,
  deepin-aiassistant,
@@ -84,12 +84,10 @@ Recommends:
  deepin-album,
  deepin-movie,
  deepin-deb-installer,
- downloader,
  deepin-compressor,
  deepin-mail,
  deepin-diskmanager,
  deepin-camera,
- deepin-phone-assistant,
  fcitx-sunpinyin,
  fcitx-ui-classic
 Conflicts:
