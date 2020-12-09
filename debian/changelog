@@ -1,4 +1,10 @@
-dde (2020.11.17) UNRELEASED; urgency=medium
+dde (2020.12.09-dde) unstable; urgency=medium
+
+  * update depends
+
+ -- system-dev <system-dev@uniontech.com>  Wed, 09 Dec 2020 13:23:53 +0800
+
+dde (2020.11.17) unstable; urgency=medium
 
   * Update depends
 

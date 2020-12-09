@@ -89,6 +89,7 @@ Recommends:
  deepin-diskmanager,
  deepin-camera,
  fcitx-sunpinyin,
+ org.deepin.scanner,
  fcitx-ui-classic
 Conflicts:
  dde-control-center(<< 2.90.5),
