@@ -96,6 +96,7 @@ Conflicts:
  deepin-cloud-scanner,
  deepin-desktop-environment-dock,
  deepin-desktop-environment-launcher,
+ deepin-user-experience-daemon,
 Description: Deepin New Desktop Environment - Next
  This is a meta package depends Deepin New Desktop Envrionment.
  .
