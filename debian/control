@@ -1,9 +1,9 @@
 Source: dde
 Section: metapackages
-Priority: extra
+Priority: optional
 Maintainer: LinuxDeepin Project <linuxdeepin@linuxdeepin.com>
-Build-Depends: debhelper (>=8.0.0)
-Standards-Version: 3.9.3
+Build-Depends: debhelper-compat (>=12)
+Standards-Version: 4.5.1
 Homepage: http://www.linuxdeepin.com
 
 Package: dde
