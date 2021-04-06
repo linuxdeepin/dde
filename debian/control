@@ -38,9 +38,12 @@ Depends: ${misc:Depends},
  dde-printer,
  dde-calendar,
  uos-service-support,
+ org.deepin.chineseime,
+ dde-introduction,
  fcitx-config-gtk
 Recommends:
- dde-introduction,
+ uos-remote-assistance,
+ org.deepin.downloader,
  deepin-aiassistant,
  deepin-editor,
  pppoe,
