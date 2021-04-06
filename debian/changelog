@@ -1,6 +1,7 @@
 dde (2021.04.06-dde) unstable; urgency=medium
 
   * update depends
+  * add deepin-user-experience-daemon
 
  -- system-dev <system-dev@uniontech.com>  Tue, 06 Apr 2021 10:01:33 +0800
 

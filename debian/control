@@ -40,6 +40,7 @@ Depends: ${misc:Depends},
  uos-service-support,
  org.deepin.chineseime,
  dde-introduction,
+ deepin-user-experience-daemon,
  fcitx-config-gtk
 Recommends:
  uos-remote-assistance,
