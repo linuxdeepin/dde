@@ -1,0 +1,13 @@
+/var/log/dde.log
+{
+    maxage 365
+    rotate 10
+    notifempty
+    copytruncate
+    missingok
+    size +10240k
+    sharedscripts
+    postrotate
+        /usr/bin/systemctl kill -s HUP rsyslog.service >/dev/null 2>&1 || true
+    endscript
+}
