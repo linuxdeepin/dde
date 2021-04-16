@@ -1,6 +1,6 @@
 Name:      dde
 Version:   2021.4.15
-Release:   %{specrelease}
+Release:   1
 Summary:   Deepin New Desktop Environment - Next
 License:   GPLv3
 URL:       https://github.com/linuxdeepin/dde
