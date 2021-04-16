@@ -5,6 +5,8 @@ Summary:   Deepin New Desktop Environment - Next
 License:   GPLv3
 URL:       https://github.com/linuxdeepin/dde
 
+Source0:   %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+
 Requires:  lightdm
 Requires:  lightdm-gtk-greeter
 Requires:  mesa-dri-drivers
@@ -85,7 +87,7 @@ Obsoletes:  deepin-picker <= 5.0.10
 Deepin New Desktop Environment.
 
 %prep
-echo "prep"
+%setup -q -n %{name}-%{version}
 
 %build
 echo "build"
