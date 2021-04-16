@@ -1,3 +1,5 @@
+%global debug_package %{nil}
+
 Name:      dde
 Version:   2021.4.15
 Release:   1
