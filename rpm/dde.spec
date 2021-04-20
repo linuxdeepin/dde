@@ -1,89 +1,109 @@
 %global debug_package %{nil}
 
-Name:      dde
-Version:   2021.4.15
-Release:   1
-Summary:   Deepin New Desktop Environment - Next
-License:   GPLv3
-URL:       https://github.com/linuxdeepin/dde
+Name:      	dde
+Version:   	2021.04.20
+Release:	    1
+Summary:   	Deepin New Desktop Environment - Next
+License:   	GPLv3
+URL:       	https://github.com/linuxdeepin/dde
 
-Source0:   %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:   	%{url}/archive/%{version}/%{name}-%{version}.tar.gz
 
-Requires:  lightdm
-Requires:  lightdm-gtk-greeter
-Requires:  mesa-dri-drivers
-Requires:  xorg-x11-server-Xorg
-Requires:  gnome-keyring
-Requires:  librsvg2-tools
-## translation
-Requires:  qt5-qttranslations
-## input method
-Requires:  fcitx fcitx-qt5 fcitx-pinyin fcitx-sunpinyin fcitx-configtool fcitx-table-chinese
-## DDE
-Requires:  dde-api
-Requires:  dde-kwin
-Requires:  dde-dock
-Requires:  dde-daemon
-Requires:  dde-desktop
-Requires:  dde-launcher
-Requires:  startdde
-Requires:  dde-polkit-agent
-Requires:  dde-file-manager
-Requires:  dde-account-faces
-Requires:  dde-control-center
-Requires:  dde-session-shell
-Requires:  dde-session-ui
-Requires:  dde-qt-dbus-factory
-Requires:  dde-disk-mount-plugin
-Requires:  dde-dock-onboard-plugin
-Requires:  dde-qt5integration
-Requires:  dde-qt5dxcb-plugin
-Requires:  dde-network-utils
-Requires:  dde-introduction
-Requires:  dde-clipboard
-Requires:  deepin-default-settings
-Requires:  deepin-qml-widgets
-Requires:  deepin-menu
-Requires:  deepin-desktop-base
-Requires:  deepin-icon-theme
-Requires:  deepin-desktop-schemas
-Requires:  deepin-system-monitor
-Requires:  deepin-wallpapers
-Requires:  deepin-gtk-theme
-Requires:  deepin-authenticate
-Requires:  deepin-keyring
-# nofreee
-Requires:  uos-license-content
-## application
-Recommends:  dde-device-formatter
-Recommends:  deepin-calculator
-Recommends:  deepin-screen-recorder
-Recommends:  deepin-screensaver
-Recommends:  deepin-draw
-Recommends:  dde-printer
-Recommends:  dde-calendar
-Recommends:  deepin-editor
-Recommends:  deepin-image-viewer
-Recommends:  deepin-shortcut-viewer
-Recommends:  deepin-sound-theme
-Recommends:  deepin-terminal
-Recommends:  blur-effect
-Recommends:  deepin-ab-recovery
-Recommends:  deepin-compressor
-Recommends:  deepin-devicemanager
-Recommends:  deepin-elf-verify
-Recommends:  deepin-font-manager
-Recommends:  deepin-graphics-driver-manager
-Recommends:  deepin-log-viewer
-Recommends:  deepin-reader
-Recommends:  libpam-deepin-security
-Recommends:  deepin-manual
+## 底层组件
+Requires:  	lightdm
+Requires:  	lightdm-gtk-greeter
+Requires:  	mesa-dri-drivers
+Requires:  	xorg-x11-server-Xorg
+Requires:  	librsvg2-tools
+##	DDE
+Requires:	dde-control-center
+Requires:	dde-daemon
+Requires:	dde-dock
+Requires:	dde-dock-onboard-plugin
+Requires:	dde-launcher
+Requires:	dde-network-utils
+Requires:	dde-polkit-agent
+Requires:	dde-preload
+Requires:	dde-qt-dbus-factory
+Requires:	dde-qt5platform-plugins
+Requires:	dde-server-industry-config
+Requires:	dde-session-shell
+Requires:	dde-session-ui
+Requires:	deepin-account-faces
+Requires:	deepin-authenticate
+Requires:	deepin-default-settings
+Requires:	deepin-desktop-schemas
+Requires:	deepin-gettext-tools
+Requires:	deepin-menu
+Requires:	deepin-pw-check
+Requires:	deepin-turbo
+Requires:	dtkcore
+Requires:	dtkgui
+Requires:	dtkwidget
+Requires:	dde-qt5integration
+Requires:	startdde
+Requires:	uos-license-content
+Requires:	dde-qt5dxcb-plugin
+Requires:	dde-qt5wayland-plugin
+Requires:	dde-api
+##	其他
+Requires:	deepin-desktop-base
+Requires:	deepin-icon-theme
+Requires:	deepin-gtk-theme
+Requires:	deepin-sound-theme
+Requires:	deepin-font-manager
+##	欢迎	
+Requires:	dde-introduction
+##  文管
+Requires:	dde-desktop
+Requires:	dde-file-manager
+Requires:	dde-disk-mount-plugin
+Requires:	deepin-wallpapers
+Requires:	deepin-shortcut-viewer
 
+##	窗管
+Requires:	dde-kwin
+##	应用
+Recommends:	deepin-system-monitor
+Recommends:	dde-calendar
+Recommends:	dde-clipboard
+Recommends:	dde-device-formatter
+Recommends:	dde-printer
+Recommends:	deepin-ab-recovery
+Recommends:	deepin-calculator
+Recommends:	deepin-compressor
+Recommends:	deepin-devicemanager
+Recommends:	deepin-draw
+Recommends:	deepin-editor
+Recommends:	deepin-image-viewer
+Recommends:	deepin-log-viewer
+Recommends:	deepin-manual
+Recommends:	deepin-picker
+Recommends:	deepin-reader
+Recommends:	deepin-screen-recorder
+Recommends:	downloadmanager
+Recommends:	deepin-diskmanager
+##	输入法
+Recommends:  fcitx 
+Recommends:	fcitx-qt5
+Recommends:	fcitx-pinyin
+Recommends:	fcitx-configtool
+Recommends:	fcitx-table-chinese
+Recommends:	deepin-fcitxconfigtool-plugin
+Recommends:	fcitx-sunpinyin
+Recommends:	fcitx-cloudpinyin
+## 需求
 # support exfat
-Recommends: exfat-utils fuse-exfat
-
+Recommends:  exfat-utils
+Recommends:  fuse-exfat
+##  bugfix
+##  fix messages error
+Recommends:	gnome-keyring
+##  fix translation error
+Recommends:	qt5-qttranslations
+Recommends:  blur-effect
 ## bugfix50260
-Obsoletes:  deepin-picker <= 5.0.10
+Obsoletes:   deepin-picker <= 5.0.10
 
 %description
 Deepin New Desktop Environment.
@@ -105,8 +125,5 @@ install -Dm644 rpm/dde %{buildroot}/etc/logrotate.d/dde
 %{_sysconfdir}/logrotate.d/dde
 
 %changelog
-* Tue Apr 15 2021 uoser <uoser@uniontech.com> - 2021.4.15-1
-- update to 2021.4.15-1
-
-
-
+* Tue Apr 15 2021 uoser <uoser@uniontech.com> - 2021.04.20-1
+- update to 2021.04.20-1
