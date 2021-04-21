@@ -2,7 +2,7 @@
 
 Name:      	dde
 Version:   	2021.04.20
-Release:	    1
+Release:	1
 Summary:   	Deepin New Desktop Environment - Next
 License:   	GPLv3
 URL:       	https://github.com/linuxdeepin/dde
@@ -15,7 +15,7 @@ Requires:  	lightdm-gtk-greeter
 Requires:  	mesa-dri-drivers
 Requires:  	xorg-x11-server-Xorg
 Requires:  	librsvg2-tools
-##	DDE
+## DDE
 Requires:	dde-control-center
 Requires:	dde-daemon
 Requires:	dde-dock
@@ -29,7 +29,7 @@ Requires:	dde-qt5platform-plugins
 Requires:	dde-server-industry-config
 Requires:	dde-session-shell
 Requires:	dde-session-ui
-Requires:	deepin-account-faces
+Requires:	dde-account-faces
 Requires:	deepin-authenticate
 Requires:	deepin-default-settings
 Requires:	deepin-desktop-schemas
@@ -44,7 +44,6 @@ Requires:	dde-qt5integration
 Requires:	startdde
 Requires:	uos-license-content
 Requires:	dde-qt5dxcb-plugin
-Requires:	dde-qt5wayland-plugin
 Requires:	dde-api
 ##	其他
 Requires:	deepin-desktop-base
@@ -65,7 +64,7 @@ Requires:	deepin-shortcut-viewer
 Requires:	dde-kwin
 ##	应用
 Recommends:	deepin-system-monitor
-Recommends:	dde-calendar
+Recommends:	deepin-calendar
 Recommends:	dde-clipboard
 Recommends:	dde-device-formatter
 Recommends:	dde-printer
@@ -78,13 +77,18 @@ Recommends:	deepin-editor
 Recommends:	deepin-image-viewer
 Recommends:	deepin-log-viewer
 Recommends:	deepin-manual
-Recommends:	deepin-picker
 Recommends:	deepin-reader
 Recommends:	deepin-screen-recorder
 Recommends:	downloadmanager
 Recommends:	deepin-diskmanager
+Recommends:     deepin-terminal
+Recommends:     deepin-picker
+Recommends:     deepin-diskmanager
+Recommends:     downloadmanager
+Recommends:     gparted
+Recommends:     firefox
 ##	输入法
-Recommends:  fcitx 
+Recommends:     fcitx 
 Recommends:	fcitx-qt5
 Recommends:	fcitx-pinyin
 Recommends:	fcitx-configtool
@@ -94,16 +98,16 @@ Recommends:	fcitx-sunpinyin
 Recommends:	fcitx-cloudpinyin
 ## 需求
 # support exfat
-Recommends:  exfat-utils
-Recommends:  fuse-exfat
+Recommends:     exfat-utils
+Recommends:     fuse-exfat
 ##  bugfix
 ##  fix messages error
 Recommends:	gnome-keyring
 ##  fix translation error
 Recommends:	qt5-qttranslations
-Recommends:  blur-effect
+Recommends:     blur-effect
 ## bugfix50260
-Obsoletes:   deepin-picker <= 5.0.10
+Obsoletes:      deepin-picker <= 5.0.10
 
 %description
 Deepin New Desktop Environment.
