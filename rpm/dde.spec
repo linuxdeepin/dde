@@ -25,7 +25,6 @@ Requires:	dde-network-utils
 Requires:	dde-polkit-agent
 Requires:	dde-preload
 Requires:	dde-qt-dbus-factory
-Requires:	dde-qt5platform-plugins
 Requires:	dde-server-industry-config
 Requires:	dde-session-shell
 Requires:	dde-session-ui
@@ -43,7 +42,7 @@ Requires:	dtkwidget
 Requires:	dde-qt5integration
 Requires:	startdde
 Requires:	uos-license-content
-Requires:	dde-qt5dxcb-plugin
+Requires:	dde-qt5xcb-plugin
 Requires:	dde-api
 ##	其他
 Requires:	deepin-desktop-base
