@@ -79,11 +79,9 @@ Requires:   deepin-manual
 Requires:   deepin-reader
 Requires:   deepin-screen-recorder
 Requires:   downloadmanager
-Requires:   deepin-diskmanager
+#Requires:   deepin-diskmanager
 Requires:   deepin-terminal
 Requires:   deepin-picker
-#Requires:   deepin-diskmanager
-Requires:   downloadmanager
 Requires:   gparted
 Requires:   firefox
 ##  输入法
