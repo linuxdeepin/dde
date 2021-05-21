@@ -1,8 +1,8 @@
 %global debug_package %{nil}
 
 Name:       dde
-Version:    2021.04.20
-Release:    1
+Version:    2021.04.23
+Release:    2
 Summary:    Deepin New Desktop Environment - Next
 License:    GPLv3
 URL:        https://github.com/linuxdeepin/dde
@@ -29,13 +29,11 @@ Requires:   dde-server-industry-config
 Requires:   dde-session-shell
 Requires:   dde-session-ui
 Requires:   dde-account-faces
-Requires:   deepin-authenticate
 Requires:   deepin-default-settings
 Requires:   deepin-desktop-schemas
 Requires:   deepin-gettext-tools
 Requires:   deepin-menu
 Requires:   deepin-pw-check
-Requires:   deepin-turbo
 Requires:   dtkcore
 Requires:   dtkgui
 Requires:   dtkwidget
@@ -45,7 +43,7 @@ Requires:   uos-license-content
 Requires:   dde-qt5xcb-plugin
 Requires:   dde-api
 ##  其他
-Requires:   deepin-desktop-base
+Requires:   deepin-desktop-server
 Requires:   deepin-icon-theme
 Requires:   deepin-gtk-theme
 Requires:   deepin-sound-theme
@@ -66,7 +64,7 @@ Requires:   deepin-system-monitor
 Requires:   dde-calendar
 Requires:   dde-clipboard
 Requires:   dde-device-formatter
-Requires:   dde-printer
+Requires:   dde-printer 
 Requires:   deepin-ab-recovery
 Requires:   deepin-calculator
 Requires:   deepin-compressor
@@ -79,11 +77,11 @@ Requires:   deepin-manual
 Requires:   deepin-reader
 Requires:   deepin-screen-recorder
 Requires:   downloadmanager
-#Requires:   deepin-diskmanager
+Requires:   deepin-diskmanager
 Requires:   deepin-terminal
 Requires:   deepin-picker
+Requires:   org.deepin.browser
 Requires:   gparted
-Requires:   firefox
 ##  输入法
 Requires:   fcitx
 Requires:   fcitx-qt5
@@ -93,6 +91,8 @@ Requires:   fcitx-table-chinese
 Requires:   deepin-fcitxconfigtool-plugin
 Requires:   fcitx-sunpinyin
 Requires:   fcitx-cloudpinyin
+## 激活授权
+Requires:   uos-license-mini
 ## 需求
 # support exfat
 Requires:   exfat-utils
@@ -102,9 +102,6 @@ Requires:   fuse-exfat
 Requires:   gnome-keyring
 ##  fix translation error
 Requires:   qt5-qttranslations
-Requires:   blur-effect
-## bugfix50260
-Obsoletes:  deepin-picker <= 5.0.10
 
 %description
 Deepin New Desktop Environment.
@@ -126,5 +123,6 @@ install -Dm644 rpm/dde %{buildroot}/etc/logrotate.d/dde
 %{_sysconfdir}/logrotate.d/dde
 
 %changelog
-* Tue Apr 15 2021 uoser <uoser@uniontech.com> - 2021.04.20-1
-- update to 2021.04.20-1
+* Fri Apr 23 2021 uoser <uoser@uniontech.com> - 2021.04.23-2
+- update to 2021.04.23-2
+
