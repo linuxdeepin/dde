@@ -82,6 +82,7 @@ Requires:   deepin-terminal
 Requires:   deepin-picker
 Requires:   org.deepin.browser
 Requires:   gparted
+Requires:   deepin-boot-maker
 ##  输入法
 Requires:   fcitx
 Requires:   fcitx-qt5
