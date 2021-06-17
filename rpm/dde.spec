@@ -76,6 +76,7 @@ Requires:   deepin-log-viewer
 Requires:   deepin-manual
 Requires:   deepin-reader
 Requires:   deepin-screen-recorder
+Requires:   deepin-screensaver
 Requires:   org.deepin.downloader
 Requires:   deepin-diskmanager
 Requires:   deepin-terminal
