@@ -41,7 +41,8 @@ Depends: ${misc:Depends},
  org.deepin.chineseime,
  dde-introduction,
  deepin-user-experience-daemon,
- fcitx-config-gtk
+ fcitx-config-gtk,
+ udcp-installer
 Recommends:
  uos-remote-assistance,
  org.deepin.downloader,
