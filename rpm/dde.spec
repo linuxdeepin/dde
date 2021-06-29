@@ -42,6 +42,7 @@ Requires:   startdde
 Requires:   uos-license-content
 Requires:   dde-qt5xcb-plugin
 Requires:   dde-api
+Requires:   dpa-ext-gnomekeyring
 ##  其他
 Requires:   deepin-desktop-server
 Requires:   deepin-icon-theme
