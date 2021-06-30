@@ -33,7 +33,6 @@ Requires:   deepin-default-settings
 Requires:   deepin-desktop-schemas
 Requires:   deepin-gettext-tools
 Requires:   deepin-menu
-Requires:   deepin-pw-check
 Requires:   dtkcore
 Requires:   dtkgui
 Requires:   dtkwidget
@@ -105,6 +104,7 @@ Requires:   fuse-exfat
 Requires:   gnome-keyring
 ##  fix translation error
 Requires:   qt5-qttranslations
+Requires:   deepin-pw-check
 
 %description
 Deepin New Desktop Environment.
