@@ -7,7 +7,7 @@ Standards-Version: 4.5.1
 Homepage: http://www.linuxdeepin.com
 
 Package: dde
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends},
  deepin-desktop-base | deepin-desktop-server | deepin-desktop-device,
  deepin-default-settings,
@@ -42,7 +42,7 @@ Depends: ${misc:Depends},
  dde-introduction,
  deepin-user-experience-daemon,
  fcitx-config-gtk,
- udcp-installer
+ udcp-installer [amd64 arm64]
 Recommends:
  uos-remote-assistance,
  org.deepin.downloader,

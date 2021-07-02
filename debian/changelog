@@ -1,3 +1,9 @@
+dde (2021.07.02-dde) unstable; urgency=medium
+
+  * udcp-installer unwanted mips64el
+
+ -- system-dev <liujianqiang@uniontech.com>  Fri, 02 Jul 2021 09:33:18 +0800
+
 dde (2021.06.24-dde) unstable; urgency=medium
 
   * update depends
