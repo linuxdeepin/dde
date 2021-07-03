@@ -42,8 +42,7 @@ Depends: ${misc:Depends},
  dde-introduction,
  deepin-user-experience-daemon,
  fcitx-config-gtk,
- udcp-installer [amd64 arm64],
- grub-efi-amd64-signed [arm64]
+ udcp-installer [amd64 arm64]
 Recommends:
  uos-remote-assistance,
  org.deepin.downloader,
