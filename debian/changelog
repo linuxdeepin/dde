@@ -1,3 +1,9 @@
+dde (2021.07.03-dde) unstable; urgency=medium
+
+  * add depends grub-efi-arm64-signed.
+
+ -- system-dev <lichenggang@uniontech.com>  Sat, 03 Jul 2021 16:53:22 +0800
+
 dde (2021.07.02-dde) unstable; urgency=medium
 
   * udcp-installer unwanted mips64el
