@@ -29,7 +29,8 @@ Depends: ${misc:Depends},
  dde-clipboard,
  deepin-screensaver,
  dde-printer,
- dde-clipboard
+ dde-clipboard,
+ org.deepin.browser
 Recommends:
  deepin-devicemanager,
  deepin-boot-maker,

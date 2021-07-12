@@ -1,3 +1,9 @@
+dde (2021.07.12) unstable; urgency=medium
+
+  * update depends.
+
+ -- Deepin Packages Builder <lichenggang@uniontech.com>  Mon, 12 Jul 2021 11:22:40 +0800
+
 dde (2021.01.28) unstable; urgency=medium
 
   * add Conflicts deepin-user-experience-daemon.
@@ -18,11 +24,11 @@ dde (2020.08.07) stable; urgency=medium
   * remove contlict  google-chrome-stab
 
  -- Deepin Packages Builder <lichenggang@uniontech.com>  Fri, 07 Aug 2020 10:28:09 +0800
-dde (2020.07.30) UNRELEASED; urgency=medium
+dde (2020.07.30) unstable; urgency=medium
 
   * update depends
 
- -- Deepin Packages Builder <caihh@caihh-PC>  Wed, 29 Jul 2020 20:01:48 +0800
+ -- Deepin Packages Builder <caihouhui@uniontech.com>  Wed, 29 Jul 2020 20:01:48 +0800
 
 dde (2019.09.26) stable; urgency=medium
 
@@ -40,25 +46,25 @@ dde (2019.06.22) stable; urgency=medium
 
   * add deepin-screensaver
 
- -- Deepin Packages Builder <zs@deepin.com>  Mon, 01 Jul 2019 08:42:14 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Mon, 01 Jul 2019 08:42:14 +0800
 
 dde (2019.06.21) stable; urgency=medium
 
   * change deepin-manual to rem
 
- -- Deepin Packages Builder <zs@deepin.com>  Fri, 21 Jun 2019 15:17:21 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Fri, 21 Jun 2019 15:17:21 +0800
 
 dde (2019.04.06) stable; urgency=medium
 
   * remove emoji
 
- -- Deepin Packages Builder <zs@deepin.com>  Mon, 13 May 2019 16:12:37 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Mon, 13 May 2019 16:12:37 +0800
 
 dde (2019.04.05) stable; urgency=medium
 
   * update 15.5 sp3 and depend dde-kwin
 
- -- Deepin Packages Builder <zs@deepin.com>  Sun, 12 May 2019 14:12:19 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Sun, 12 May 2019 14:12:19 +0800
 
 dde (2019.04.04) stable; urgency=medium
 
@@ -232,37 +238,37 @@ dde (15.4+4) unstable; urgency=medium
 
   * remove deepin-nautilus-properties
 
- -- Deepin Packages Builder <zs@zs-PC>  Tue, 11 Apr 2017 15:25:27 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Tue, 11 Apr 2017 15:25:27 +0800
 
 dde (15.4+3) unstable; urgency=medium
 
   * remove essential yes
 
- -- Deepin Packages Builder <zs@zs-PC>  Fri, 31 Mar 2017 12:22:24 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Fri, 31 Mar 2017 12:22:24 +0800
 
 dde (15.4+2) unstable; urgency=medium
 
   * Tag for add essential yes 
 
- -- Deepin Packages Builder <zs@zs-PC>  Tue, 28 Mar 2017 15:57:27 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Tue, 28 Mar 2017 15:57:27 +0800
 
 dde (15.4+1) unstable; urgency=medium
 
   * Tag for dde
 
- -- Deepin Packages Builder <zs@zs-PC>  Wed, 22 Mar 2017 17:55:32 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Wed, 22 Mar 2017 17:55:32 +0800
 
 dde (15.4) unstable; urgency=medium
 
   * rebuild
 
- -- Deepin Packages Builder <zs@zs-PC>  Wed, 22 Mar 2017 10:19:19 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Wed, 22 Mar 2017 10:19:19 +0800
 
 dde (15.3+22) unstable; urgency=medium
 
   * add dde-qt5integration
 
- -- Deepin Packages Builder <zs@zs-PC>  Tue, 21 Mar 2017 19:24:27 +0800
+ -- Deepin Packages Builder <zhangshuang@deepin.com>  Tue, 21 Mar 2017 19:24:27 +0800
 
 dde (15.3+21) unstable; urgency=medium
 
