@@ -30,7 +30,7 @@ Depends: ${misc:Depends},
  deepin-screensaver,
  dde-printer,
  dde-clipboard,
- org.deepin.browser
+ org.deepin.browser (>> 5.3.0.47-1)
 Recommends:
  deepin-devicemanager,
  deepin-boot-maker,
@@ -98,6 +98,7 @@ Conflicts:
  deepin-desktop-environment-dock,
  deepin-desktop-environment-launcher,
  deepin-user-experience-daemon,
+ org.deepin.browser (<< 5.3.0.48),
 Description: Deepin New Desktop Environment - Next
  This is a meta package depends Deepin New Desktop Envrionment.
  .

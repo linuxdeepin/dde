@@ -1,3 +1,9 @@
+dde (2021.07.13) unstable; urgency=medium
+
+  * update depends.
+
+ -- Deepin Packages Builder <lichenggang@uniontech.com>  Tue, 13 Jul 2021 09:11:43 +0800
+
 dde (2021.07.12) unstable; urgency=medium
 
   * update depends.
