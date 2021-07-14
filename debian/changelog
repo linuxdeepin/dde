@@ -1,3 +1,9 @@
+dde (2021.07.14-dde) unstable; urgency=medium
+
+  * add depends org.deepin.chineseime.
+
+ -- system-dev <zhangfeilong@uniontech.com>  Wed, 14 Jul 2021 21:50:22 +0800
+
 dde (2021.07.03-dde) unstable; urgency=medium
 
   * add depends grub-efi-arm64-signed.
