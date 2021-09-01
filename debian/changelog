@@ -1,3 +1,9 @@
+dde (2021.09.1) unstable; urgency=medium
+
+  * update depends.
+
+ -- LiChengGang <lichenggang@uniontech.com>  Wed, 01 Sep 2021 14:47:47 +0800
+
 dde (2021.07.13) unstable; urgency=medium
 
   * update depends.
