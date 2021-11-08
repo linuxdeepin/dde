@@ -96,7 +96,8 @@ Recommends:
  deepin-camera,
  fcitx-sunpinyin,
  org.deepin.scanner,
- fcitx-ui-classic
+ fcitx-ui-classic,
+ dconfig-daemon
 Conflicts:
  dde-control-center(<< 2.90.5),
  deepin-desktop-environment-desktop,
@@ -129,4 +130,5 @@ Description: Deepin New Desktop Environment - Next
    * deepin-screensaver
    * dde-clipboard
    * deepin-license-activator
+   * dconfig-daemon
  You can safety remove it after installed.
