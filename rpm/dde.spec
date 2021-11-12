@@ -11,7 +11,6 @@ Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 
 ## 底层组件
 Requires:   lightdm
-Requires:   lightdm-gtk-greeter
 Requires:   mesa-dri-drivers
 Requires:   xorg-x11-server-Xorg
 Requires:   librsvg2-tools
@@ -47,9 +46,6 @@ Requires:   deepin-desktop-server
 Requires:   deepin-icon-theme
 Requires:   deepin-gtk-theme
 Requires:   deepin-sound-theme
-Requires:   deepin-font-manager
-##  欢迎  
-Requires:   dde-introduction
 ##  文管
 Requires:   dde-desktop
 Requires:   dde-file-manager
@@ -64,23 +60,17 @@ Requires:   deepin-system-monitor
 Requires:   dde-calendar
 Requires:   dde-clipboard
 Requires:   dde-device-formatter
-Requires:   dde-printer 
 Requires:   deepin-ab-recovery
 Requires:   deepin-calculator
 Requires:   deepin-compressor
 Requires:   deepin-devicemanager
-Requires:   deepin-draw
 Requires:   deepin-editor
-Requires:   deepin-image-viewer
 Requires:   deepin-log-viewer
 Requires:   deepin-manual
 Requires:   deepin-reader
 Requires:   deepin-screen-recorder
 Requires:   deepin-screensaver
-Requires:   org.deepin.downloader
-Requires:   deepin-diskmanager
 Requires:   deepin-terminal
-Requires:   deepin-picker
 Requires:   org.deepin.browser
 Requires:   gparted
 Requires:   deepin-boot-maker
