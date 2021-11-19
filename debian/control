@@ -44,6 +44,7 @@ Depends: ${misc:Depends},
  udcp-installer [amd64 arm64],
  grub-efi-arm64-signed [arm64]
 Recommends:
+ dde-qt5wayland-plugin,
  uos-remote-assistance,
  org.deepin.downloader,
  deepin-aiassistant,
