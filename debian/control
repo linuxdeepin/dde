@@ -98,12 +98,13 @@ Recommends:
  fcitx-sunpinyin,
  org.deepin.scanner,
  fcitx-ui-classic,
- dde-dconfig-daemon | dconfig-daemon
+ dde-dconfig-daemon
 Conflicts:
  dde-control-center(<< 2.90.5),
  deepin-desktop-environment-desktop,
  deepin-desktop-environment-dock,
  deepin-desktop-environment-launcher,
+ dconfig-daemon
 Description: Deepin New Desktop Environment - Next
  This metapackage merely depends on the various Deepin Desktop Envrionment packages available in Deepin. 
  Use this if you want Deepin Desktop Envrionment.
