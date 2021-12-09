@@ -85,7 +85,7 @@ Requires:   deepin-fcitxconfigtool-plugin
 Requires:   fcitx-sunpinyin
 Requires:   fcitx-cloudpinyin
 ## 激活授权
-Requires:   uos-license-mini
+Requires:   deepin-license-activator
 ## 需求
 # support exfat
 Requires:   exfat-utils
@@ -96,6 +96,9 @@ Requires:   gnome-keyring
 ##  fix translation error
 Requires:   qt5-qttranslations
 Requires:   deepin-pw-check
+
+##  replace uos-license-mini with deepin-license-activator
+Obsoletes:  uos-license-mini
 
 %description
 Deepin New Desktop Environment.
