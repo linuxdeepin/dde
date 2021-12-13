@@ -2,7 +2,7 @@
 
 Name:       dde
 Version:    2021.04.23
-Release:    2
+Release:    1 
 Summary:    Deepin New Desktop Environment - Next
 License:    GPLv3
 URL:        https://github.com/linuxdeepin/dde
@@ -97,9 +97,6 @@ Requires:   gnome-keyring
 Requires:   qt5-qttranslations
 Requires:   deepin-pw-check
 
-##  replace uos-license-mini with deepin-license-activator
-Obsoletes:  uos-license-mini
-
 %description
 Deepin New Desktop Environment.
 
@@ -120,6 +117,6 @@ install -Dm644 rpm/dde %{buildroot}/etc/logrotate.d/dde
 %{_sysconfdir}/logrotate.d/dde
 
 %changelog
-* Fri Apr 23 2021 uoser <uoser@uniontech.com> - 2021.04.23-2
-- update to 2021.04.23-2
+* Fri Apr 23 2021 uoser <uoser@uniontech.com> - 2021.04.23-1
+- update to 2021.04.23-1
 
