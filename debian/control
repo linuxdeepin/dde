@@ -32,8 +32,10 @@ Depends: ${misc:Depends},
  dde-clipboard,
  dde-grand-search,
  deepin-pre-package,
- org.deepin.browser (>> 5.3.0.47-1)
+ org.deepin.browser (>> 5.3.0.47-1),
+ dde-dconfig-daemon
 Recommends:
+ dde-qt5wayland-plugin,
  deepin-devicemanager,
  deepin-boot-maker,
  deepin-reader,
@@ -71,6 +73,7 @@ Recommends:
  deepin-shortcut-viewer,
  crda,
  network-manager-integration-plugins,
+ dde-manual-content,
  libtxc-dxtn-s2tc0 | libtxc-dxtn-s2tc,
  libflashplugin-pepper,
  x-display-manager,
