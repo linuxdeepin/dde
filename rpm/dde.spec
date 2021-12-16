@@ -22,7 +22,6 @@ Requires:   dde-dock-onboard-plugin
 Requires:   dde-launcher
 Requires:   dde-network-utils
 Requires:   dde-polkit-agent
-Requires:   dde-preload
 Requires:   dde-qt-dbus-factory
 Requires:   dde-server-industry-config
 Requires:   dde-session-shell
