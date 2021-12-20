@@ -83,8 +83,6 @@ Requires:   fcitx-table-chinese
 Requires:   deepin-fcitxconfigtool-plugin
 Requires:   fcitx-sunpinyin
 Requires:   fcitx-cloudpinyin
-## 激活授权
-Requires:   deepin-license-activator
 ## 需求
 # support exfat
 Requires:   exfat-utils
