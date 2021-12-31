@@ -46,6 +46,7 @@ Depends: ${misc:Depends},
 Recommends:
  dde-qt5wayland-plugin,
  uos-remote-assistance,
+ deepin-mobile-assistant,
  org.deepin.downloader,
  deepin-aiassistant,
  deepin-editor,
