@@ -1,3 +1,9 @@
+dde (2022.02.09-dde) unstable; urgency=medium
+
+  * update depends
+
+ -- caihouhui <caihouhui@uniontech.com>  Wed, 09 Feb 2022 11:11:26 +0800
+
 dde (2021.07.14-dde) unstable; urgency=medium
 
   * add depends org.deepin.chineseime.
