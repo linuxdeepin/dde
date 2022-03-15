@@ -1,3 +1,9 @@
+dde (2022.03.15) unstable; urgency=medium
+
+  * update depends 
+
+ -- LiChengGang <lichenggang@uniontech.com>  Tue, 15 Mar 2022 10:29:03 +0800
+
 dde (2022.02.28) unstable; urgency=medium
 
   * add postinst 
