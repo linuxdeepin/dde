@@ -34,7 +34,8 @@ Depends: ${misc:Depends},
  deepin-pre-package,
  org.deepin.browser (>> 5.3.0.47-1),
  dde-dconfig-daemon,
- deepin-face
+ deepin-face,
+ systemd-timesyncd
 Recommends:
  dde-qt5wayland-plugin,
  deepin-devicemanager,
