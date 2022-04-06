@@ -29,7 +29,6 @@ Depends: ${misc:Depends},
  dde-clipboard,
  deepin-screensaver,
  dde-clipboard,
- deepin-license-activator,
  deepin-app-store,
  deepin-terminal,
  deepin-defender,
@@ -38,7 +37,7 @@ Depends: ${misc:Depends},
  dde-printer,
  dde-calendar,
  uos-service-support,
- org.deepin.chineseime,
+ org.deepin.chineseime [!sw_64],
  dde-introduction,
  deepin-user-experience-daemon,
  fcitx-config-gtk,
@@ -128,5 +127,4 @@ Description: Deepin New Desktop Environment - Next
    * dde-clipboard
    * deepin-screensaver
    * dde-clipboard
-   * deepin-license-activator
  You can safety remove it after installed.
