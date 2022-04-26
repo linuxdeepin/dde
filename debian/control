@@ -7,7 +7,7 @@ Standards-Version: 4.5.1
 Homepage: http://www.linuxdeepin.com
 
 Package: dde
-Architecture: any
+Architecture: amd64 arm64 mips64el loongarch64
 Depends: ${misc:Depends},
  deepin-desktop-base | deepin-desktop-server | deepin-desktop-device,
  deepin-default-settings,
@@ -37,14 +37,14 @@ Depends: ${misc:Depends},
  dde-printer,
  dde-calendar,
  uos-service-support,
- org.deepin.chineseime [!sw_64],
+ org.deepin.chineseime,
  dde-introduction,
  deepin-user-experience-daemon,
  fcitx-config-gtk,
  deepin-fcitxconfigtool-plugin,
  deepin-bluetooth-blocker,
  uos-remote-assistance,
- deepin-aiassistant [!sw_64],
+ deepin-aiassistant,
  udcp-installer [amd64 arm64],
  grub-efi-arm64-signed [arm64]
 Recommends:
