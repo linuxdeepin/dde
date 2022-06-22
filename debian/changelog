@@ -1,3 +1,9 @@
+dde (2022.06.22-dde) unstable; urgency=medium
+
+  * update depends
+  * add fcitx-table-arabic、fcitx-hangul
+
+ -- chenshijie <chenshijie@uniontech.com>  Wed Jun 22 11:19:03 2022 +0800
 dde (2022.02.09-dde) unstable; urgency=medium
 
   * update depends
