@@ -1,3 +1,9 @@
+dde (2022.08.08-dde) unstable; urgency=medium
+
+  * add depends grub-efi-loongarch64-signed.
+
+ -- Youwan Wang <wangyouwan@unionteh.com>  Mon, 08 Aug 2022 10:36:43 +0800
+
 dde (2022.06.22-dde) unstable; urgency=medium
 
   * update depends
