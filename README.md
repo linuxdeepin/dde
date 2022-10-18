@@ -41,6 +41,8 @@ Use this if you want Deepin Desktop Envrionment..
 * fcitx-config-gtk
 * udcp-installer [amd64 arm64]
 * grub-efi-arm64-signed [arm64]
+* grub-efi-loongarch64-signed [loongarch64]
+* uos-audit-dac
 
 ### Recommends dependencies:
 

@@ -1,3 +1,9 @@
+dde (2022.10.18-dde) unstable; urgency=medium
+
+  * add hangbiao audit package uos-audit-dac.
+  
+ -- zhangya <zhangya@uniontech.com>  Tue, 18 Oct 2022 11:17:09 +0800
+
 dde (2022.10.08-dde) unstable; urgency=medium
 
   * update Depends
