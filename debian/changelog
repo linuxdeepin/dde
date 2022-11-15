@@ -1,3 +1,9 @@
+dde (2022.11.15-dde) unstable; urgency=medium
+
+  * add usb device control permission-manager.
+  
+ -- zhangya <zhangya@uniontech.com>  Tue, 15 Nov 2022 10:47:09 +0800
+
 dde (2022.10.18-dde) unstable; urgency=medium
 
   * add hangbiao audit package uos-audit-dac.

@@ -49,7 +49,8 @@ Depends: ${misc:Depends},
  udcp-installer [amd64 arm64],
  grub-efi-arm64-signed [arm64],
  grub-efi-loongarch64-signed [loongarch64],
- uos-audit-dac
+ uos-audit-dac,
+ permission-manager,
 Recommends:
  dde-qt5wayland-plugin,
  deepin-mobile-assistant,

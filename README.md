@@ -43,6 +43,7 @@ Use this if you want Deepin Desktop Envrionment..
 * grub-efi-arm64-signed [arm64]
 * grub-efi-loongarch64-signed [loongarch64]
 * uos-audit-dac
+* permission-manager
 
 ### Recommends dependencies:
 
