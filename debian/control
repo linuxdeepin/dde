@@ -114,8 +114,7 @@ Conflicts:
  deepin-desktop-environment-desktop,
  deepin-desktop-environment-dock,
  deepin-desktop-environment-launcher,
- dconfig-daemon,
- dde-service-manager
+ dconfig-daemon
 Description: Deepin New Desktop Environment - Next
  This metapackage merely depends on the various Deepin Desktop Envrionment packages available in Deepin.
  Use this if you want Deepin Desktop Envrionment.
