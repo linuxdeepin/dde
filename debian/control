@@ -108,7 +108,8 @@ Recommends:
  fcitx-sunpinyin,
  org.deepin.scanner,
  fcitx-ui-classic,
- dde-dconfig-daemon
+ dde-dconfig-daemon,
+ dde-service-manager
 Conflicts:
  dde-control-center(<< 2.90.5),
  deepin-desktop-environment-desktop,
@@ -116,12 +117,12 @@ Conflicts:
  deepin-desktop-environment-launcher,
  dconfig-daemon
 Description: Deepin New Desktop Environment - Next
- This metapackage merely depends on the various Deepin Desktop Envrionment packages available in Deepin.
+ This metapackage merely depends on the various Deepin Desktop Envrionment packages available in Deepin. 
  Use this if you want Deepin Desktop Envrionment.
  .
  The following metapackages will be pulled down as dependency which
  will inturn pull down real font packages.
-   * deepin-desktop-base
+   * deepin-desktop-base 
    * deepin-default-settings,
    * dde-desktop
    * dde-dock
