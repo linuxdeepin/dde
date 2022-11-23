@@ -51,6 +51,7 @@ Depends: ${misc:Depends},
  grub-efi-loongarch64-signed [loongarch64],
  uos-audit-dac,
  permission-manager,
+ sec-cfg,
 Recommends:
  dde-qt5wayland-plugin,
  deepin-mobile-assistant,

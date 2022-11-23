@@ -44,6 +44,7 @@ Use this if you want Deepin Desktop Envrionment..
 * grub-efi-loongarch64-signed [loongarch64]
 * uos-audit-dac
 * permission-manager
+* sec-cfg
 
 ### Recommends dependencies:
 

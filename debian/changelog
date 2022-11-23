@@ -1,13 +1,19 @@
+dde (2022.11.23-dde) unstable; urgency=medium
+
+  * permission-manager need sec-cfg sign deepin-defender .
+
+ -- zhangya <zhangya@uniontech.com>  Wed, 23 Nov 2022 20:34:09 +0800
+
 dde (2022.11.15-dde) unstable; urgency=medium
 
   * add usb device control permission-manager.
-  
+
  -- zhangya <zhangya@uniontech.com>  Tue, 15 Nov 2022 10:47:09 +0800
 
 dde (2022.10.18-dde) unstable; urgency=medium
 
   * add hangbiao audit package uos-audit-dac.
-  
+
  -- zhangya <zhangya@uniontech.com>  Tue, 18 Oct 2022 11:17:09 +0800
 
 dde (2022.10.08-dde) unstable; urgency=medium
