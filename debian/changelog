@@ -1,3 +1,9 @@
+dde (2023.01.05-dde) unstable; urgency=medium
+
+  * add fonts-gb as a dependency.
+
+ -- xinpeng.wang <wangxinpeng@uniontech.com>  Thu, 05 Jan 2023 17:44:16 +0800
+
 dde (2022.11.23-dde) unstable; urgency=medium
 
   * permission-manager need sec-cfg sign deepin-defender .
