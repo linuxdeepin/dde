@@ -1,4 +1,4 @@
-dde (2022.11.23-dde) unstable; urgency=medium
+dde (2022.11.23) unstable; urgency=medium
 
   * permission-manager need sec-cfg sign deepin-defender .
 
