@@ -1,11 +1,11 @@
-## Deepin Desktop Environment {#mainpage}
+## Deepin 桌面环境 {#mainpage}
 
-Deepin Desktop Environment (DDE) depends on the various Deepin Desktop Envrionment packages available in Deepin. 
-Use this if you want Deepin Desktop Envrionment..
+Deepin 桌面环境 (DDE) 依赖于 Deepin 中提供的各种 Deepin 桌面环境包，
+如果你想要 Deepin 桌面环境请使用这个
 
-## Dependencies
+## 依赖
 
-### Build dependencies
+### 构建依赖
 
 * deepin-desktop-base | deepin-desktop-server | deepin-desktop-device
 * deepin-default-settings
@@ -46,7 +46,7 @@ Use this if you want Deepin Desktop Envrionment..
 * permission-manager
 * sec-cfg
 
-### Recommends dependencies:
+### 推荐的依赖
 
 * dde-qt5wayland-plugin
 * uos-remote-assistance
@@ -104,28 +104,28 @@ Use this if you want Deepin Desktop Envrionment..
 * fcitx-ui-classic
 * dde-dconfig-daemon
 
-### Conflicts:
+### 冲突
  dde-control-center(<< 2.90.5),
  deepin-desktop-environment-desktop,
  deepin-desktop-environment-dock,
  deepin-desktop-environment-launcher,
  dconfig-daemon
 
-## Getting help
+## 帮助
 
-Any usage issues can ask for help via
+如果您遇到任何其他问题，您可能还会发现这些渠道很有用：
 
-* [Deepin Community Space](https://matrix.to/#/#deepin-space:matrix.org)
+* [Deepin 社区空间](https://matrix.to/#/#deepin-space:matrix.org)
 * [Forum](https://bbs.deepin.org)
 * [WiKi](https://wiki.deepin.org/)
 
-## Getting involved
+## 贡献指南
 
-We encourage you to report issues and contribute changes
+我们鼓励您报告问题并做出更改
 
 * [Contribution guide for developers](https://github.com/linuxdeepin/developer-center/wiki/Contribution-Guidelines-for-Developers-en). (English)
 * [开发者代码贡献指南](https://github.com/linuxdeepin/developer-center/wiki/Contribution-Guidelines-for-Developers) (中文)
 
-## License
+## 开源许可证
 
-deepin-tool-kit is licensed under [GPL-2+](LICENSE).
+deepin-tool-kit 在 [GPL-2+](LICENSE) 下发布.
