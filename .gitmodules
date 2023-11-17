@@ -1,0 +1,6 @@
+[submodule "dde-shell"]
+	path = dde-shell
+	url = https://github.com/linuxdeepin/dde-shell
+[submodule "treeland"]
+	path = treeland
+	url = https://github.com/vioken/treeland
