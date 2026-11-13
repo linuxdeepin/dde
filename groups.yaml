@@ -1,0 +1,57 @@
+# DDE 组版本基线
+#
+# 唯一事实来源：每组包含哪些仓库，以及最近完成轮次的组基线版本。
+# 规则：
+#   1. version 不带 epoch；成员保留现有 epoch，去掉 epoch 后必须等于本组的 version；
+#   2. 组内任一仓库有更新，整组一起升 version 并一起重新打包；
+#   3. 依赖关系（debian/control 里的 >= / >>）不因此修改。
+# 首次统一前，version 只是起始基线，不代表成员当前已统一；
+# 组目标须高于它，各成员完整目标须高于当前版本。
+# 原始发布记录固定完整成员目标；后续轮次要求当前完整版本与上轮目标一致。
+#
+# 基线 PR 的 group-release-ready 检查确认整组完成；组件侧校验尚未接入。
+
+# 目录名与 GitHub 仓库名不一致的成员
+repo_overrides:
+  dde-session-shell-v25: dde-session-shell-snipe
+  qt5platform-plugins: dde-qtplatform-plugins
+  qt5integration: dde-qtintegration
+
+groups:
+  G1:
+    name: DTK 基础库
+    version: "6.7.53"
+    members:
+      - dtkcommon
+      - dtklog
+      - dtkcore
+      - dtkgui
+      - dtkwidget
+      - dtkdeclarative
+      - qt5platform-plugins
+      - qt5integration
+
+  G2:
+    name: 服务与会话桌面应用
+    version: "6.1.113"
+    members:
+      - go-lib
+      - go-dbus-factory
+      - dde-api
+      - dde-daemon
+      - dde-services
+      - dde-session
+      - dde-session-shell-v25
+      - dde-shell
+      - dde-tray-loader
+      - dde-application-manager
+      - deepin-service-manager
+      - dde-control-center
+      - dde-launchpad
+      - dde-network-core
+      - deepin-update-ui
+      - xdg-desktop-portal-dde
+      - dde-appearance
+
+# 独立组件不参与统一，故不列入：
+#   dde-dialog / dde-manual-content / gnome-keyring
