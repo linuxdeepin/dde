@@ -1,0 +1,137 @@
+name: Release group
+
+# 先预留本组基线分支并派发成员；成员 PR 都创建后再创建基线 PR。
+on:
+  workflow_dispatch:
+    inputs:
+      group:
+        description: 组
+        required: true
+        type: choice
+        options: [G1, G2]
+      version:
+        description: 组目标版本（新发布不带 epoch；相同目标可恢复原发布）
+        required: true
+        type: string
+      name:
+        description: debian/changelog 中的维护者姓名
+        required: true
+        type: string
+      email:
+        description: debian/changelog 中的维护者邮箱
+        required: true
+        type: string
+      base_branch:
+        description: 成员目标分支（G2；留空使用各成员默认分支，恢复时沿用原分支）
+        required: false
+        type: string
+      distribution:
+        description: Changelog 发行套件（G2）
+        required: false
+        type: string
+        default: unstable
+      create_pr:
+        description: 创建发布 PR（G2；取消勾选只生成成员 changelog）
+        required: false
+        type: boolean
+        default: true
+      dry_run:
+        description: 只检查并打印计划，不创建 PR 或派发
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-group-${{ inputs.group }}
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  plan:
+    uses: ./.github/workflows/sync-baseline.yml
+    with:
+      group: ${{ inputs.group }}
+      version: ${{ inputs.version }}
+      dry_run: ${{ inputs.dry_run }}
+      base_branch: ${{ inputs.base_branch }}
+      distribution: ${{ inputs.distribution }}
+      create_pr: ${{ inputs.create_pr }}
+      defer_pr: true
+    secrets:
+      APP_ID: ${{ secrets.APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+
+  dispatch:
+    needs: plan
+    if: ${{ !inputs.dry_run && needs.plan.outputs.repos != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        member: ${{ fromJSON(needs.plan.outputs.repos) }}
+    steps:
+      - name: Create GitHub App token
+        id: app_token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ matrix.member.repo }}
+          permission-actions: write
+          permission-contents: read
+
+      - name: Dispatch ${{ matrix.member.repo }}
+        env:
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+          GROUP: ${{ inputs.group }}
+          VERSION: ${{ matrix.member.version || inputs.version }}
+          REPO: ${{ matrix.member.repo }}
+          BASE: ${{ matrix.member.base }}
+          WORKFLOW: ${{ matrix.member.workflow }}
+          MAINTAINER_NAME: ${{ inputs.name }}
+          MAINTAINER_EMAIL: ${{ inputs.email }}
+          DISTRIBUTION: ${{ inputs.distribution }}
+          CREATE_PR: ${{ inputs.create_pr }}
+        run: |
+          set -euo pipefail
+          if [ "$GROUP" = "G1" ]; then
+            gh workflow run "$WORKFLOW" -R "$REPO" --ref "$BASE" \
+              -f version="$VERSION" \
+              -f name="$MAINTAINER_NAME" \
+              -f email="$MAINTAINER_EMAIL" \
+              -f timezone=Asia/Shanghai
+          else
+            gh workflow run "$WORKFLOW" -R "$REPO" --ref "$BASE" \
+              -f version="$VERSION" \
+              -f name="$MAINTAINER_NAME" \
+              -f email="$MAINTAINER_EMAIL" \
+              -f base_branch="$BASE" \
+              -f distribution="$DISTRIBUTION" \
+              -f create_pr="$CREATE_PR"
+          fi
+          if [ "$CREATE_PR" = "true" ]; then
+            echo "已触发 $REPO -> $VERSION；成员执行结果见基线 PR"
+          else
+            echo "已触发 $REPO -> $VERSION；生成的 changelog 见成员 Actions 的 diff 和产物"
+          fi
+
+  finalize:
+    needs: [plan, dispatch]
+    if: ${{ always() && !cancelled() && !inputs.dry_run && inputs.create_pr && needs.plan.result == 'success' && (needs.dispatch.result == 'success' || needs.dispatch.result == 'skipped') }}
+    uses: ./.github/workflows/sync-baseline.yml
+    with:
+      group: ${{ inputs.group }}
+      version: ${{ inputs.version }}
+      dry_run: false
+      base_branch: ${{ inputs.base_branch }}
+      distribution: ${{ inputs.distribution }}
+      create_pr: true
+      defer_pr: true
+      finalize: true
+    secrets:
+      APP_ID: ${{ secrets.APP_ID }}
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
