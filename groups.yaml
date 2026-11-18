@@ -1,15 +1,20 @@
 # DDE 组版本基线
 #
-# 唯一事实来源：每组包含哪些仓库，以及最近完成轮次的组基线版本。
+# 唯一事实来源：分组成员与最近完成的基线版本；G2 按发布线保存版本。
 # 规则：
-#   1. version 不带 epoch；成员保留现有 epoch，去掉 epoch 后必须等于本组的 version；
-#   2. 组内任一仓库有更新，整组一起升 version 并一起重新打包；
+#   1. 基线版本不带 epoch；成员保留现有 epoch，去掉 epoch 后必须等于本线组版本；
+#   2. 组内任一仓库有更新，本线整组一起升版并一起重新打包；
 #   3. 依赖关系（debian/control 里的 >= / >>）不因此修改。
-# 首次统一前，version 只是起始基线，不代表成员当前已统一；
+# 首次统一前，版本只是起始基线，不代表成员当前已统一；
 # 组目标须高于它，各成员完整目标须高于当前版本。
 # 原始发布记录固定完整成员目标；后续轮次要求当前完整版本与上轮目标一致。
 #
-# 基线 PR 的 group-release-ready 检查确认整组完成；组件侧校验尚未接入。
+# 基线 PR 的 group-release-ready 确认本线整组完成；成员使用 group-version-guard。
+
+# 新维护线经 Propose 配置 PR 加入；bases 固定完整成员 SHA，只用于创建分支。
+release_lines:
+  master:
+    member_branch: master
 
 # 目录名与 GitHub 仓库名不一致的成员
 repo_overrides:
@@ -33,7 +38,8 @@ groups:
 
   G2:
     name: 服务与会话桌面应用
-    version: "6.1.113"
+    versions:
+      master: "6.1.113"
     members:
       - go-lib
       - go-dbus-factory
