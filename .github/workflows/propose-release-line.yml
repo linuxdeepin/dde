@@ -1,0 +1,66 @@
+# SPDX-FileCopyrightText: 2026 UnionTech Software Technology Co., Ltd.
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: Propose release line
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_line:
+        description: 新发布线 ID（例如 develop-2500u1）
+        required: true
+        type: string
+      target_branch:
+        description: 新发布线在各成员仓库中的分支名（例如 develop/2500u1）
+        required: true
+        type: string
+      source_branch:
+        description: 各成员仓库中已有的代码来源分支（默认 master；例如 develop/2500u3，无需先登记发布线）
+        required: false
+        type: string
+        default: master
+      dry_run:
+        description: 只读预检并输出固定 SHA 与配置差异
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  propose:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: baseline-controller
+      cancel-in-progress: false
+      queue: max
+    steps:
+      - name: Create GitHub App token
+        id: app_token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout trusted default branch
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: Install deps
+        run: pip install --quiet pyyaml
+
+      - name: Propose fixed member snapshot
+        env:
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
+          RELEASE_LINE: ${{ inputs.release_line }}
+          TARGET_BRANCH: ${{ inputs.target_branch }}
+          SOURCE_BRANCH: ${{ inputs.source_branch }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: python3 .github/scripts/propose_release_line.py

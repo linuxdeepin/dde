@@ -21,10 +21,11 @@ on:
         description: debian/changelog 中的维护者邮箱
         required: true
         type: string
-      base_branch:
-        description: 成员目标分支（G2；留空使用各成员默认分支，恢复时沿用原分支）
+      release_line:
+        description: 发布线 ID（G2 使用配置中的成员分支；G1 只支持 master）
         required: false
         type: string
+        default: master
       distribution:
         description: Changelog 发行套件（G2）
         required: false
@@ -45,7 +46,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: release-group-${{ inputs.group }}
+  group: release-group-${{ inputs.group == 'G2' && format('{0}-{1}', inputs.release_line || 'master', inputs.group) || inputs.group }}
   cancel-in-progress: false
   queue: max
 
@@ -56,7 +57,7 @@ jobs:
       group: ${{ inputs.group }}
       version: ${{ inputs.version }}
       dry_run: ${{ inputs.dry_run }}
-      base_branch: ${{ inputs.base_branch }}
+      release_line: ${{ inputs.release_line }}
       distribution: ${{ inputs.distribution }}
       create_pr: ${{ inputs.create_pr }}
       defer_pr: true
@@ -68,6 +69,7 @@ jobs:
     needs: plan
     if: ${{ !inputs.dry_run && needs.plan.outputs.repos != '[]' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -127,7 +129,7 @@ jobs:
       group: ${{ inputs.group }}
       version: ${{ inputs.version }}
       dry_run: false
-      base_branch: ${{ inputs.base_branch }}
+      release_line: ${{ inputs.release_line }}
       distribution: ${{ inputs.distribution }}
       create_pr: true
       defer_pr: true

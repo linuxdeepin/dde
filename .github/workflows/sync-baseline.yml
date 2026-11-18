@@ -26,6 +26,10 @@ on:
       base_branch:
         required: false
         type: string
+      release_line:
+        required: false
+        type: string
+        default: master
       distribution:
         required: false
         type: string
@@ -58,6 +62,7 @@ jobs:
   coordinate:
     name: Coordinate group release
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     if: >
       github.event_name != 'pull_request_target' ||
       github.event.pull_request.head.repo.full_name == github.repository ||
@@ -81,6 +86,12 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
           permission-statuses: write
+          permission-administration: ${{ inputs.group != 'G1' && 'read' || '' }}
+
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
 
       - name: Install deps
         run: pip install --quiet pyyaml
@@ -89,10 +100,12 @@ jobs:
         id: coordinate
         env:
           GH_TOKEN: ${{ steps.app_token.outputs.token }}
+          APP_ID: ${{ secrets.APP_ID }}
           GROUP: ${{ inputs.group }}
           VERSION: ${{ inputs.version }}
           DRY_RUN: ${{ inputs.dry_run }}
           MEMBER_BASE: ${{ inputs.base_branch }}
+          RELEASE_LINE: ${{ inputs.release_line }}
           DISTRIBUTION: ${{ inputs.distribution }}
           CREATE_PR: ${{ inputs.create_pr }}
           DEFER_PR: ${{ inputs.defer_pr }}
@@ -106,12 +119,16 @@ jobs:
           import os
           import re
           import subprocess
+          import sys
           import tempfile
           import time
           from concurrent.futures import ThreadPoolExecutor
           from urllib.parse import quote, urlencode
 
           import yaml
+
+          sys.path.insert(0, os.path.join(os.environ.get("GITHUB_WORKSPACE", "."), ".github", "scripts"))
+          from release_line_checks import MAX_TRAVERSAL_DEPTH
 
           MARKER = "<!-- group-release\n"
           CONTEXT = "group-release-ready"
@@ -194,24 +211,118 @@ jobs:
               safe = re.sub(r"[^A-Za-z0-9._-]+", "-", version).strip("-")
               return f"release-{version}" if group == "G1" else f"automation/update-changelog/{safe}"
 
-          def rewrite(text, group, version):
+          def multiline(cfg, group):
+              return group == "G2" and "versions" in cfg["groups"][group]
+
+          def lines_for(cfg, group):
+              return list(cfg["groups"][group]["versions"]) if multiline(cfg, group) else ["master"]
+
+          def group_version(cfg, group, release_line="master"):
+              value = cfg["groups"][group]
+              return value["versions"][release_line] if multiline(cfg, group) else value["version"]
+
+          def set_group_version(cfg, group, version, release_line="master"):
+              if multiline(cfg, group):
+                  cfg["groups"][group]["versions"][release_line] = version
+              else:
+                  cfg["groups"][group]["version"] = version
+
+          def baseline_branch(cfg, group, release_line="master"):
+              return f"baseline/{release_line}/{group}" if multiline(cfg, group) else f"baseline/{group}"
+
+          def configured_base(cfg, group, release_line="master"):
+              return cfg["release_lines"][release_line]["member_branch"] if multiline(cfg, group) else None
+
+          def group_state(cfg, group, release_line="master"):
+              return (group_version(cfg, group, release_line), cfg["groups"][group]["members"], repo_names(cfg, group),
+                      configured_base(cfg, group, release_line))
+
+          def validate_config(cfg):
+              if "G2" not in cfg.get("groups", {}) or not multiline(cfg, "G2"):
+                  return
+              value, entries = cfg["groups"]["G2"], cfg.get("release_lines")
+              versions = value["versions"]
+              if ("version" in value or not isinstance(versions, dict) or not isinstance(entries, dict)
+                      or "master" not in versions or set(versions) != set(entries)):
+                  raise RuntimeError("G2 发布线与 versions 必须一一对应，并保留 master")
+              members = value["members"]
+              if (not isinstance(members, list) or not members or any(not isinstance(m, str) for m in members)
+                      or len(members) != len(set(members)) or len(repo_names(cfg, "G2")) != len(set(repo_names(cfg, "G2")))):
+                  raise RuntimeError("G2 成员列表为空或有重复")
+              branches = []
+              for line, entry in entries.items():
+                  if not isinstance(line, str) or not re.fullmatch(r"[A-Za-z0-9._-]+", line):
+                      raise RuntimeError("无效发布线 ID")
+                  branch = entry.get("member_branch") if isinstance(entry, dict) else None
+                  if (not isinstance(branch, str) or not branch
+                          or (line == "master" and branch != "master")
+                          or (line != "master" and not branch.startswith("develop/"))
+                          or subprocess.run(["git", "check-ref-format", f"refs/heads/{branch}"],
+                                            capture_output=True).returncode
+                          or subprocess.run(["git", "check-ref-format", baseline_branch(cfg, "G2", line)],
+                                            capture_output=True).returncode):
+                      raise RuntimeError(f"{line} 的成员分支或基线分支名无效")
+                  branches.append(branch)
+                  version = versions[line]
+                  if not isinstance(version, str) or ":" in version:
+                      raise RuntimeError(f"{line} 的组基线版本必须是不带 epoch 的字符串")
+                  validate_version("G2", version)
+                  if line != "master":
+                      bases = entry.get("bases")
+                      if (not isinstance(bases, dict) or set(bases) != set(members)
+                              or any(not isinstance(sha, str) or not re.fullmatch(r"[0-9a-fA-F]{40}", sha)
+                                     for sha in bases.values())):
+                          raise RuntimeError(f"{line} 必须固定全部 G2 成员的完整基准 SHA")
+              if len(branches) != len(set(branches)):
+                  raise RuntimeError("不同发布线不能映射同一个成员分支")
+
+          def select_line(cfg, group, release_line):
+              line = release_line.strip() or "master"
+              if line not in lines_for(cfg, group):
+                  raise RuntimeError(f"{group} 不支持发布线 {line}")
+              return line
+
+          def baseline_identity(branch):
+              parts = branch.split("/")
+              if len(parts) == 2 and parts[0] == "baseline":
+                  return parts[1], "master"
+              if len(parts) == 3 and parts[0] == "baseline" and parts[2] == "G2":
+                  return parts[2], parts[1]
+              return None
+
+          def check_member_ready(repo, branch):
+              from release_line_checks import check_member_ready as check_ready
+              return check_ready(api, repo, branch, int(os.environ["APP_ID"]))
+
+          def rewrite(text, group, version, release_line="master"):
               before = yaml.safe_load(text)
               expected = copy.deepcopy(before)
-              expected["groups"][group]["version"] = version
+              set_group_version(expected, group, version, release_line)
               lines = text.splitlines()
               inside = False
+              inside_versions = False
               for i, line in enumerate(lines):
                   if re.fullmatch(rf"  {re.escape(group)}:\s*", line):
                       inside = True
                       continue
                   if inside and re.match(r"^  \S", line):
                       break
+                  if inside and multiline(before, group):
+                      if re.match(r"^    versions\s*:", line):
+                          inside_versions = True
+                          continue
+                      if inside_versions and re.match(r"^    \S", line):
+                          break
+                      key = re.escape(release_line)
+                      if inside_versions and re.match(rf'''^      (?:{key}|"{key}"|'{key}')\s*:''', line):
+                          lines[i] = line.split(":", 1)[0] + f": {json.dumps(version)}"
+                          break
                   if inside and re.match(r"^    version\s*:", line):
                       lines[i] = f"    version: {json.dumps(version)}"
                       break
               updated = "\n".join(lines) + "\n"
               if yaml.safe_load(updated) != expected:
-                  raise RuntimeError(f"无法安全更新 {group} 的 version，请检查 groups.yaml 格式")
+                  raise RuntimeError(f"无法安全更新 {group}/{release_line} 的 version，请检查 groups.yaml 格式")
               return updated
 
           def latest(repo, branch, base):
@@ -223,12 +334,12 @@ jobs:
           def ref(repo, branch):
               return api(f"repos/{repo}/git/ref/heads/{quote(branch, safe='/')}", missing=True)
 
-          def record(repo, sha, group):
+          def record(repo, sha, group, release_line="master"):
               commit = api(f"repos/{repo}/git/commits/{sha}")
               merges = []
               # shortcut: 仅支持保留原提交的 merge 同步；需要 rebase/merge queue 时再扩展校验。
               while MARKER not in commit["message"]:
-                  if len(commit["parents"]) != 2 or len(merges) >= 100:
+                  if len(commit["parents"]) != 2 or len(merges) >= MAX_TRAVERSAL_DEPTH:
                       raise RuntimeError(f"{group} 的 baseline 分支没有发布记录，需人工核实，不能覆盖")
                   merges.append(commit)
                   commit = api(f"repos/{repo}/git/commits/{commit['parents'][0]['sha']}")
@@ -237,8 +348,12 @@ jobs:
               if release["group"] != group or [p["sha"] for p in commit["parents"]] != [release["base_sha"]]:
                   raise RuntimeError(f"{group} 的发布记录已改变，不能继续")
               original = config(repo, release["base_sha"])
+              validate_config(original)
+              select_line(original, group, release_line)
+              if release.get("release_line", "master") != release_line or (multiline(original, group) and "release_line" not in release):
+                  raise RuntimeError("基线发布记录的发布线不符")
               expected = copy.deepcopy(original)
-              expected["groups"][group]["version"] = release["version"]
+              set_group_version(expected, group, release["version"], release_line)
               if config(repo, commit["sha"]) != expected or [m["repo"] for m in release["members"]] != repo_names(original, group):
                   raise RuntimeError(f"{group} 的分支不再是本轮单组基线变更，不能继续")
               delta = api(f"repos/{repo}/compare/{release['base_sha']}...{commit['sha']}")
@@ -246,13 +361,15 @@ jobs:
                   raise RuntimeError("基线发布提交只能修改 groups.yaml")
               if any(m["workflow"] != workflow(group, m["repo"]) for m in release["members"]):
                   raise RuntimeError(f"{group} 的成员 workflow 记录不符")
+              if multiline(original, group) and any(m["base"] != configured_base(original, group, release_line) for m in release["members"]):
+                  raise RuntimeError("基线发布记录的成员目标分支不符")
               validate_version(group, release["version"])
               for member in release["members"]:
                   if "version" in member:
                       validate_version(group, member["version"])
                       if member["version"].split(":", 1)[-1] != release["version"]:
                           raise RuntimeError(f"{member['repo']} 的成员目标版本与组版本不符")
-              original_version = original["groups"][group]["version"]
+              original_version = group_version(original, group, release_line)
               if all("version" in member for member in release["members"]):
                   original_version = original_version.split(":", 1)[-1]
               if not compare(release["version"], "gt", original_version):
@@ -266,9 +383,10 @@ jobs:
                       if ancestry["merge_base_commit"]["sha"] != base_sha:
                           raise RuntimeError("只能合并默认分支来更新基线 PR")
                       updated_base = config(repo, base_sha)
-                      if updated_base["groups"].get(group) != original["groups"][group] or repo_names(updated_base, group) != repo_names(original, group):
+                      validate_config(updated_base)
+                      if group_state(updated_base, group, release_line) != group_state(original, group, release_line):
                           raise RuntimeError("同步默认分支时本组基线或成员已改变")
-                      updated_base["groups"][group]["version"] = release["version"]
+                      set_group_version(updated_base, group, release["version"], release_line)
                       delta = api(f"repos/{repo}/compare/{base_sha}...{merge['sha']}")
                       if config(repo, merge["sha"]) != updated_base or [(f["filename"], f["status"]) for f in delta["files"]] != [("groups.yaml", "modified")]:
                           raise RuntimeError("同步后的分支不再是本轮单组基线变更")
@@ -315,23 +433,25 @@ jobs:
               return parallel(lambda m: member_state(release, m, live_required,
                               prs[m["repo"]] if prs is not None else None), release["members"])
 
-          def active(repo, base, cfg, group):
-              branch = f"baseline/{group}"
+          def active(repo, base, cfg, group, release_line="master"):
+              branch = baseline_branch(cfg, group, release_line)
               pr, reservation = latest(repo, branch, base), ref(repo, branch)
               if not pr and not reservation:
                   return None, None, None
+              if pr and (pr["head"]["ref"] != branch or not pr["head"]["repo"] or pr["head"]["repo"]["full_name"] != repo):
+                  raise RuntimeError("基线 PR 来源仓库或分支不符，不能继续发布")
               head = pr["head"]["sha"] if pr else reservation["object"]["sha"]
-              release = record(repo, head, group)
+              release = record(repo, head, group, release_line)
               if release["base_branch"] != base or (pr and pr["base"]["ref"] != base):
                   raise RuntimeError("基线仓库默认分支或 PR 目标已改变，请先核实原发布")
               if pr and reservation and reservation["object"]["sha"] != head:
                   if not pr["merged_at"]:
                       raise RuntimeError("发布分支与原 PR 不一致，不能覆盖")
-                  newer = record(repo, reservation["object"]["sha"], group)
+                  newer = record(repo, reservation["object"]["sha"], group, release_line)
                   ancestry = api(f"repos/{repo}/compare/{pr['merge_commit_sha']}...{newer['base_sha']}")
                   if (newer["base_branch"] != base or ancestry["merge_base_commit"]["sha"] != pr["merge_commit_sha"]
-                          or config(repo, newer["base_sha"])["groups"][group]["version"] != release["version"]
-                          or cfg["groups"][group]["version"] != release["version"]):
+                          or group_version(config(repo, newer["base_sha"]), group, release_line) != release["version"]
+                          or group_version(cfg, group, release_line) != release["version"]):
                       raise RuntimeError("新分支不是上一轮完成后的发布记录，不能覆盖")
                   states(release, live_required=False)
                   return None, reservation, newer
@@ -372,14 +492,16 @@ jobs:
                   api(path, {"body": updated}, method="PATCH")
 
           def body(release, prs=None):
-              return (f"{release['group']} 发布 {release['version']}。\n\n"
+              label = f"{release['group']}/{release['release_line']}" if "release_line" in release else release["group"]
+              return (f"{label} 发布 {release['version']}。\n\n"
                       "成员 changelog PR 全部合并后，group-release-ready 才会通过；基线 PR 合并后本轮结束。\n"
                       "派发失败不会解除锁定；关闭本 PR 会同步关闭仍开放的成员 PR，使用相同组和版本恢复本轮。\n\n" +
                       member_links(release, prs or {}))
 
           def create_pr(repo, branch, base, release, prs=None):
+              label = f"{release['group']}/{release['release_line']}" if "release_line" in release else release["group"]
               return api(f"repos/{repo}/pulls", {"head": branch, "base": base, "draft": True,
-                  "title": f"chore(baseline): {release['group']} -> {release['version']}",
+                  "title": f"chore(baseline): {label} -> {release['version']}",
                   "body": body(release, prs)})
 
           def check_ordinary(repo, base, cfg, pr):
@@ -387,22 +509,66 @@ jobs:
                   return
               before = config(repo, pr["base"]["sha"])
               after = config(pr["head"]["repo"]["full_name"], pr["head"]["sha"])
-              changed = any(g not in after["groups"] or after["groups"][g]["version"] != value["version"]
-                            for g, value in before["groups"].items())
-              if changed:
-                  raise RuntimeError("基线升版必须从 Release group 发起")
+              validate_config(after)
+              pending = {}
+              def unfinished(group, line=None):
+                  contexts = {}
+                  for source in (before, cfg):
+                      if group in source["groups"]:
+                          for entry in lines_for(source, group):
+                              if line is None or entry == line:
+                                  contexts[baseline_branch(source, group, entry)] = (source, entry)
+                  for branch, (source, entry) in contexts.items():
+                      if branch not in pending:
+                          marker, reservation, release = active(repo, base, source, group, entry)
+                          pending[branch] = bool(release and (not marker or not marker["merged_at"]
+                              or not all(s == "merged" for s in states(release))))
+                      if pending[branch]:
+                          return True
+                  return False
               for group in before["groups"]:
-                  if repo_names(before, group) != repo_names(after, group):
-                      marker, reservation, release = active(repo, base, cfg, group)
-                      if release and (not marker or not marker["merged_at"]
-                                      or not all(s == "merged" for s in states(release))):
-                          raise RuntimeError(f"{group} 尚未完成，不能修改本轮成员")
+                  if group not in after["groups"]:
+                      raise RuntimeError("基线升版必须从 Release group 发起")
+                  old_lines, new_lines = lines_for(before, group), lines_for(after, group)
+                  if any(group_version(before, group, line) != group_version(after, group, line)
+                         for line in old_lines if line in new_lines):
+                      raise RuntimeError("基线升版必须从 Release group 发起")
+                  if multiline(before, group) and not multiline(after, group):
+                      raise RuntimeError("不能将 G2 发布线配置回退为旧格式")
+                  if not multiline(before, group) and multiline(after, group) and unfinished(group):
+                      raise RuntimeError("G2 尚未完成，不能迁移发布线配置")
+                  if (before["groups"][group]["members"] != after["groups"][group]["members"]
+                          or repo_names(before, group) != repo_names(after, group)) and unfinished(group):
+                      raise RuntimeError(f"{group} 尚未完成，不能修改本轮成员")
+                  if multiline(before, group):
+                      for line in old_lines:
+                          if before["release_lines"][line] != after.get("release_lines", {}).get(line) and unfinished(group, line):
+                              raise RuntimeError(f"{group}/{line} 尚未完成，不能修改或删除本线配置")
+                  for line in set(new_lines) - set(old_lines):
+                      version = group_version(after, group, line)
+                      bases = after["release_lines"][line]["bases"]
+                      def validate_base(item):
+                          member, name = item
+                          sha = bases[member]
+                          commit = api(f"repos/{name}/git/commits/{sha}")
+                          if commit["sha"].lower() != sha.lower() or head_version(name, sha).split(":", 1)[-1] != version:
+                              raise RuntimeError(f"{name}@{sha} 与 {line} 初始版本 {version} 不符")
+                      parallel(validate_base, zip(after["groups"][group]["members"], repo_names(after, group)))
 
           def check_same_head_ordinary_prs(repo, base, cfg, sha):
               query = urlencode({"state": "open", "per_page": 100})
               for pr in api(f"repos/{repo}/pulls?{query}", paginate=True):
                   if pr["head"]["sha"] == sha:
-                      check_ordinary(repo, base, cfg, pr)
+                      if pr["head"]["ref"].startswith("baseline/"):
+                          identity = baseline_identity(pr["head"]["ref"])
+                          if not identity or pr["head"]["repo"]["full_name"] != repo:
+                              raise RuntimeError("同 SHA 存在无效基线 PR")
+                          release = record(repo, sha, *identity)
+                          original = config(repo, release["base_sha"])
+                          if pr["base"]["ref"] != base or baseline_branch(original, *identity) != pr["head"]["ref"]:
+                              raise RuntimeError("同 SHA 基线 PR 的来源或目标不符")
+                      else:
+                          check_ordinary(repo, base, cfg, pr)
 
           def check(repo, pr, release, cfg):
               if pr["base"]["ref"] != release["base_branch"]:
@@ -430,10 +596,18 @@ jobs:
               update_member_links(repo, pr, release, prs)
               results = states(release, prs=prs)
               ready = all(s == "merged" for s in results)
-              if pr["merged_at"] and cfg["groups"][release["group"]]["version"] != release["version"]:
+              group, line = release["group"], release.get("release_line", "master")
+              if pr["merged_at"] and group_version(cfg, group, line) != release["version"]:
                   raise RuntimeError("已合并的基线与本轮目标不一致")
-              if not (pr["merged_at"] and ready) and repo_names(cfg, release["group"]) != [m["repo"] for m in release["members"]]:
-                  raise RuntimeError("发布期间分组成员发生变化，请先恢复本轮成员")
+              if not (pr["merged_at"] and ready):
+                  original = config(repo, release["base_sha"])
+                  if (repo_names(cfg, group) != [m["repo"] for m in members]
+                          or cfg["groups"][group]["members"] != original["groups"][group]["members"]):
+                      raise RuntimeError("发布期间分组成员发生变化，请先恢复本轮成员")
+                  if (multiline(original, group) and configured_base(cfg, group, line) != configured_base(original, group, line)):
+                      raise RuntimeError("发布期间成员目标分支发生变化")
+                  if not pr["merged_at"] and group_version(cfg, group, line) != group_version(original, group, line):
+                      raise RuntimeError("发布期间本线基线版本发生变化")
               if pr["merged_at"] and ready:
                   return results
               status(repo, pr["head"]["sha"], "success" if ready else "pending",
@@ -443,7 +617,7 @@ jobs:
                                   "variables": {"id": pr["node_id"]}})
               return results
 
-          def wait_for_member_prs(release):
+          def wait_for_member_prs(release, wait=True):
               timeout = int(os.environ.get("MEMBER_PR_WAIT_SECONDS", "1200"))
               interval = max(1, int(os.environ.get("MEMBER_PR_POLL_SECONDS", "30")))
               deadline = time.monotonic() + timeout
@@ -456,6 +630,9 @@ jobs:
                              if state in ("missing", "running")]
                   if not waiting:
                       return prs
+                  if not wait:
+                      print(f"等待成员发布 PR: {', '.join(waiting)}")
+                      return None
                   if time.monotonic() >= deadline:
                       raise RuntimeError("等待成员发布 PR 超时: " + ", ".join(waiting))
                   print(f"等待成员发布 PR: {', '.join(waiting)}")
@@ -480,19 +657,39 @@ jobs:
                       api(path, {"body": f"{body}\n\n{marker}" if body else marker}, method="PATCH")
 
           def start(repo, base, sha, cfg, group, target, dry_run, member_base="", distribution="unstable",
-                    create_pr_enabled=True, defer_pr=False, finalize=False):
+                    create_pr_enabled=True, defer_pr=False, finalize=False, release_line="master"):
               if group not in cfg["groups"]:
                   raise RuntimeError(f"未知组: {group}")
+              validate_config(cfg)
+              release_line = select_line(cfg, group, release_line)
               member_base = member_base.strip()
+              if multiline(cfg, group):
+                  configured = configured_base(cfg, group, release_line)
+                  if member_base and member_base != configured:
+                      raise RuntimeError("成员目标分支必须使用发布线配置，不能另填 base_branch")
+                  member_base = configured
               distribution = distribution.strip() or "unstable"
               if group == "G1" and (member_base or distribution != "unstable" or not create_pr_enabled):
                   raise RuntimeError("G1 的 Auto Release 不支持 base_branch、distribution 或 create_pr=false")
               dry_run = dry_run or not create_pr_enabled
               validate_version(group, target)
-              branch = f"baseline/{group}"
-              pr, reservation, release = active(repo, base, cfg, group)
+              branch = baseline_branch(cfg, group, release_line)
+              pr, reservation, release = active(repo, base, cfg, group, release_line)
               if finalize and not release:
                   raise RuntimeError("没有可等待的基线发布记录，请先运行 Release group")
+              previous_release = release
+              if not release and multiline(cfg, group) and release_line == "master":
+                  legacy_pr, legacy_ref = latest(repo, "baseline/G2", base), ref(repo, "baseline/G2")
+                  if legacy_pr or legacy_ref:
+                      legacy_head = legacy_pr["head"]["sha"] if legacy_pr else legacy_ref["object"]["sha"]
+                      legacy_cfg = config(repo, legacy_head)
+                      if multiline(legacy_cfg, group):
+                          raise RuntimeError("旧 G2 基线分支的记录格式异常，请先核实")
+                      legacy_pr, legacy_ref, previous_release = active(repo, base, legacy_cfg, group)
+                      if (not legacy_pr or not legacy_pr["merged_at"]
+                              or not all(s == "merged" for s in states(previous_release))
+                              or group_version(cfg, group) != previous_release["version"].split(":", 1)[-1]):
+                          raise RuntimeError("旧 G2 发布尚未完成或迁移基线不符，不能开启新发布线")
               if (group == "G1" and "-" in target.split("+", 1)[0]
                       and not (release and target == release["version"])):
                   raise RuntimeError("G1 新发布必须是正式三段版本，暂不支持预发布版本")
@@ -502,7 +699,7 @@ jobs:
                                  parallel(lambda m: member_prs(release, m), release["members"])))
                   results = states(release, prs=prs)
                   complete = bool(pr and pr["merged_at"] and all(s == "merged" for s in results)
-                                  and cfg["groups"][group]["version"] == release["version"])
+                                  and group_version(cfg, group, release_line) == release["version"])
                   if not complete:
                       if member_base and any(m["base"] != member_base for m in release["members"]):
                           raise RuntimeError("恢复发布时不能改变成员目标分支，请沿用原 base_branch")
@@ -514,6 +711,11 @@ jobs:
                           raise RuntimeError("基线已提前合并，先人工完成原成员 PR，不再派发")
                       if repo_names(cfg, group) != [m["repo"] for m in release["members"]]:
                           raise RuntimeError("发布期间分组成员发生变化，请先恢复本轮成员")
+                      if multiline(cfg, group):
+                          original = config(repo, release["base_sha"])
+                          if group_state(cfg, group, release_line) != group_state(original, group, release_line):
+                              raise RuntimeError("发布期间本线基线、成员或目标分支发生变化")
+                          parallel(lambda m: check_member_ready(m["repo"], m["base"]), release["members"])
                       if dry_run:
                           return [m for m, s in zip(release["members"], results) if s == "missing"]
                       if reservation and reservation["object"]["sha"] != head:
@@ -525,6 +727,8 @@ jobs:
                               return [m for m, s in zip(release["members"], results) if s == "missing"]
                           if finalize:
                               prs = wait_for_member_prs(release)
+                              if prs is None:
+                                  return []
                           pr = create_pr(repo, branch, base, release, prs)
                       elif pr["state"] == "closed":
                           pr = api(f"repos/{repo}/pulls/{pr['number']}", {"state": "open"}, method="PATCH")
@@ -536,7 +740,7 @@ jobs:
                       raise RuntimeError("已完成的发布分支被改动，不能删除")
               if ":" in target:
                   raise RuntimeError("组目标版本不能包含 epoch；成员 epoch 会从现有 changelog 继承")
-              current = cfg["groups"][group]["version"].split(":", 1)[-1]
+              current = group_version(cfg, group, release_line).split(":", 1)[-1]
               if not compare(target, "gt", current):
                   raise RuntimeError(f"{target} 必须大于 {group} 基线 {current}")
               query = urlencode({"state": "open", "per_page": 100})
@@ -545,7 +749,9 @@ jobs:
                       old_cfg = config(old["head"]["repo"]["full_name"], old["head"]["sha"])
                       comparison = api(f"repos/{repo}/compare/{old['base']['sha']}...{old['head']['sha']}")
                       old_base = config(repo, comparison["merge_base_commit"]["sha"])
-                      if old_cfg["groups"].get(group) != old_base["groups"].get(group):
+                      def state_at(value):
+                          return group_state(value, group, release_line) if group in value["groups"] and release_line in lines_for(value, group) else None
+                      if state_at(old_cfg) != state_at(old_base):
                           raise RuntimeError(f"{group} 有旧基线 PR #{old['number']}，请先核实完成，不能重复派发")
               def prepare(name):
                   info = api(f"repos/{name}")
@@ -553,6 +759,8 @@ jobs:
                       raise RuntimeError(f"{name} 已归档或禁用，不能发起组发布")
                   member = {"repo": name, "base": member_base or info["default_branch"],
                             "default_branch": info["default_branch"], "workflow": workflow(group, name)}
+                  if multiline(cfg, group):
+                      check_member_ready(name, member["base"])
                   entry = api(f"repos/{name}/actions/workflows/{member['workflow']}")
                   if entry["state"] != "active":
                       raise RuntimeError(f"{name} 的 {member['workflow']} 未启用")
@@ -577,10 +785,10 @@ jobs:
                               f"{name}@{branch} 的 {member['workflow']} 输入不兼容: "
                               f"缺少 {missing or '无'}，类型不符 {wrong_type or '无'}")
                   actual = head_version(name, member["base"])
-                  if release:
-                      previous = next((m for m in release["members"] if m["repo"] == name), None)
+                  if previous_release:
+                      previous = next((m for m in previous_release["members"] if m["repo"] == name), None)
                       if previous:
-                          expected = previous.get("version", release["version"])
+                          expected = previous.get("version", previous_release["version"])
                           if actual != expected:
                               raise RuntimeError(f"{name}={actual} 与上轮目标 {expected} 不一致，请先核实已有发布")
                   epoch, separator, _ = actual.partition(":")
@@ -594,12 +802,23 @@ jobs:
                       raise RuntimeError(f"{name} 存在未完成的发布 PR，请先核实")
                   return member
               members = parallel(prepare, repo_names(cfg, group))
+              if multiline(cfg, group):
+                  current_sha = ref(repo, base)["object"]["sha"]
+                  if current_sha != sha:
+                      current_cfg = config(repo, current_sha)
+                      validate_config(current_cfg)
+                      select_line(current_cfg, group, release_line)
+                      if group_state(current_cfg, group, release_line) != group_state(cfg, group, release_line):
+                          raise RuntimeError("本线配置在成员预检期间变化，请重跑")
+                      cfg, sha = current_cfg, current_sha
               if dry_run:
                   return members
               release = {"group": group, "version": target, "base_sha": sha, "base_branch": base,
                          "distribution": distribution, "wait_for_member_prs": defer_pr, "members": members,
                          "started_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
-              text = rewrite(content(repo, "groups.yaml", sha), group, target)
+              if multiline(cfg, group):
+                  release["release_line"] = release_line
+              text = rewrite(content(repo, "groups.yaml", sha), group, target, release_line)
               blob = api(f"repos/{repo}/git/blobs", {"content": text, "encoding": "utf-8"})
               base_commit = api(f"repos/{repo}/git/commits/{sha}")
               tree = api(f"repos/{repo}/git/trees", {"base_tree": base_commit["tree"]["sha"],
@@ -617,33 +836,48 @@ jobs:
 
           def sync(repo, base, cfg, groups=None):
               failures = []
-              for group in groups or cfg["groups"]:
+              validate_config(cfg)
+              entries = [(group, line) for group in groups or cfg["groups"] for line in lines_for(cfg, group)]
+              for group, line in entries:
                   pr = None
+                  label = f"{group}/{line}" if multiline(cfg, group) else group
+                  branch = baseline_branch(cfg, group, line)
                   try:
-                      branch = f"baseline/{group}"
-                      pr, reservation, release = active(repo, base, cfg, group)
+                      pr, reservation, release = active(repo, base, cfg, group, line)
                       if not pr:
                           if reservation:
                               if release and release.get("wait_for_member_prs"):
-                                  print(f"{group}: 已预留基线，等待成员 PR 后创建基线 PR")
+                                  if group == "G2":
+                                      prs = wait_for_member_prs(release, wait=False)
+                                      if prs is None:
+                                          continue
+                                      pr = create_pr(repo, branch, base, release, prs)
+                                  else:
+                                      print(f"{label}: 已预留基线，等待成员 PR 后创建基线 PR")
+                                      continue
                               else:
-                                  failures.append(f"{group}: 分支已保留但 PR 未创建，用相同组和版本恢复")
+                                  failures.append(f"{label}: 分支已保留但 PR 未创建，用相同组和版本恢复")
+                                  continue
                           else:
                               names = repo_names(cfg, group)
-                              versions = parallel(lambda name: head_version(name, api(f"repos/{name}")["default_branch"]), names)
-                              baseline = cfg["groups"][group]["version"].split(":", 1)[-1]
+                              versions = parallel(lambda name: head_version(name, configured_base(cfg, group, line) or api(f"repos/{name}")["default_branch"]), names)
+                              baseline = group_version(cfg, group, line).split(":", 1)[-1]
                               if any(v.split(":", 1)[-1] != baseline for v in versions):
-                                  print(f"{group}: 尚未统一，请从 Release group 发起首轮发布")
-                          continue
+                                  print(f"{label}: 尚未统一，请从 Release group 发起首轮发布")
+                              continue
                       check(repo, pr, release, cfg)
+                      if group == "G2" and release.get("wait_for_member_prs") and pr["state"] == "open":
+                          prs = dict(zip([m["repo"] for m in release["members"]],
+                                         parallel(lambda m: member_prs(release, m), release["members"])))
+                          retrigger_member_checks(release, prs)
                   except Exception as error:
                       try:
                           pr = pr or latest(repo, branch, base)
                           if pr:
                               status(repo, pr["head"]["sha"], "failure", FAILURE_DESCRIPTION)
                       except Exception as status_error:
-                          failures.append(f"{group}: 状态发布失败: {status_error}")
-                      failures.append(f"{group}: {error}")
+                          failures.append(f"{label}: 状态发布失败: {status_error}")
+                      failures.append(f"{label}: {error}")
               if failures:
                   raise RuntimeError("; ".join(failures))
 
@@ -661,7 +895,8 @@ jobs:
                                   os.environ.get("MEMBER_BASE", ""), os.environ.get("DISTRIBUTION", "unstable"),
                                   os.environ.get("CREATE_PR", "true").lower() == "true",
                                   os.environ.get("DEFER_PR", "").lower() == "true",
-                                  os.environ.get("FINALIZE", "").lower() == "true")
+                                  os.environ.get("FINALIZE", "").lower() == "true",
+                                  os.environ.get("RELEASE_LINE", "master"))
                   print(f"{group}: {version}")
                   for member in members:
                       print(f"  - {member['repo']}: {member.get('version', version)}")
@@ -673,21 +908,36 @@ jobs:
                           event = json.load(f)
                       pr = api(f"repos/{repo}/pulls/{event['number']}")
                       try:
+                          validate_config(cfg)
                           if pr["head"]["ref"].startswith("baseline/"):
-                              pr_group = pr["head"]["ref"].removeprefix("baseline/")
-                              if pr_group not in cfg["groups"] or pr["head"]["repo"]["full_name"] != repo:
+                              identity = baseline_identity(pr["head"]["ref"])
+                              if not identity or identity[0] not in cfg["groups"] or pr["head"]["repo"]["full_name"] != repo:
                                   raise RuntimeError("旧基线 PR 或外部发布分支，需先人工核实")
-                              release = record(repo, pr["head"]["sha"], pr_group)
+                              pr_group, line = identity
+                              release = record(repo, pr["head"]["sha"], pr_group, line)
+                              original = config(repo, release["base_sha"])
+                              if baseline_branch(original, pr_group, line) != pr["head"]["ref"]:
+                                  raise RuntimeError("基线 PR 分支与发布记录不符")
                               if release["base_branch"] != base or pr["base"]["ref"] != base:
                                   raise RuntimeError("基线仓库默认分支已改变，请先核实原发布")
                               check(repo, pr, release, cfg)
                           else:
                               check_ordinary(repo, base, cfg, pr)
                               # 状态挂在提交上，普通 PR 也必须遵守同 SHA 基线的发布检查。
-                              for g in cfg["groups"]:
-                                  marker = latest(repo, f"baseline/{g}", base)
+                              branches = {baseline_branch(cfg, g, line): (g, line)
+                                          for g in cfg["groups"] for line in lines_for(cfg, g)}
+                              if "G2" in cfg["groups"] and multiline(cfg, "G2"):
+                                  branches["baseline/G2"] = ("G2", "master")
+                              query = urlencode({"state": "open", "per_page": 100})
+                              for marker in api(f"repos/{repo}/pulls?{query}", paginate=True):
+                                  if marker["head"]["ref"].startswith("baseline/") and marker["head"]["sha"] == pr["head"]["sha"] and (
+                                          marker["head"]["ref"] not in branches or marker["head"]["repo"]["full_name"] != repo):
+                                      raise RuntimeError("同 SHA 存在无效基线 PR")
+                              for branch, (g, line) in branches.items():
+                                  marker = latest(repo, branch, base)
                                   if marker and marker["head"]["sha"] == pr["head"]["sha"]:
-                                      marker, reservation, release = active(repo, base, cfg, g)
+                                      source = cfg if branch == baseline_branch(cfg, g, line) else config(repo, marker["head"]["sha"])
+                                      marker, reservation, release = active(repo, base, source, g, line)
                                       if not marker:
                                           continue
                                       if marker["head"]["sha"] != pr["head"]["sha"]:
