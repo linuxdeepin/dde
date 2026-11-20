@@ -15,6 +15,26 @@
 release_lines:
   master:
     member_branch: master
+  develop-2500u3:
+    member_branch: "develop/2500u3"
+    bases:
+      go-lib: "73e9ebcf1c94c997fe804499ff778c592fa7438c"
+      go-dbus-factory: "078e9773c4fc1fe52506a076e75376a49e8bede7"
+      dde-api: "6bd2064abb8d8734d8e6143feeb66ac9ae6d7707"
+      dde-daemon: "78bef0508670eb195970584eff2c87ae179d3f47"
+      dde-services: "e42cbea098803e3b927da9252dfaf64ad0b29c21"
+      dde-session: "2f6a58a90ae4210a6734c2c0f6cb5f86a993d226"
+      dde-session-shell-v25: "ba9cba0b388635816e9e2be1c5514e2d21eb70ef"
+      dde-shell: "2fd2ec0f1c18cf6668e85b723e06beb03609d165"
+      dde-tray-loader: "62f3a2b2fe44bba36340ba11f755cf132baaa69f"
+      dde-application-manager: "fd4efafb4afe173ef9073fd19754d4c8462108fc"
+      deepin-service-manager: "32f7097bfbdced82930b8c6b8424368d942cda9e"
+      dde-control-center: "5a4879b9f6a946bb2a18f344e62aa80d6b1c54ee"
+      dde-launchpad: "bb3c7fe2545963d0a5a3c7e44ea442a87805f9d9"
+      dde-network-core: "24bd2145b41cbbab020ee74002cb48a150d3dcd7"
+      deepin-update-ui: "0b4e5204a7872b5f05daec9bef3b82153b2df3bc"
+      xdg-desktop-portal-dde: "a4e0c9b81a5a3df8e182e1de64b0320b4dac2695"
+      dde-appearance: "5a3d2d71bb838de4d3cbb20607096182a2e662d3"
 
 # 目录名与 GitHub 仓库名不一致的成员
 repo_overrides:
@@ -40,6 +60,7 @@ groups:
     name: 服务与会话桌面应用
     versions:
       master: "6.1.113"
+      develop-2500u3: "6.2.1"
     members:
       - go-lib
       - go-dbus-factory
